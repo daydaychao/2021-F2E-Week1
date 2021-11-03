@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Home */
+.home-top-image {
+  background-image: url(../images/top.jpg);
+  background-position: center;
+  background-size: cover;
+}

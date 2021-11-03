@@ -1,54 +1,30 @@
-import { ReactChild, ReactFragment, ReactPortal, useEffect, useState } from 'react'
-import { ScenicSpot } from '@/api/index'
-import { CityName, ScenicSpot as TScenicSpot } from '@/types'
-import { always, identity, map, memoizeWith, tap } from 'ramda'
-import './App.css'
-
-let apiTimes = 0
+import { BrowserRouter, Route } from 'react-router-dom'
+import { Header } from '@/components/Header'
+import { Home, List, Detail } from '@/pages'
 
 function App() {
-  const [cityData, setCityData]: any = useState()
-
-  //要用此操作涵式去改變狀態
-  // const getAllCountries = () => {
-  //   // Fetch from API to get Date back
-  //   ScenicSpot.getAll().then((data) => setData(data))
-  // }
-  // getAllCountries()
-
-  const getByCity = (city: CityName) => {
-    ScenicSpot.getByCityName(city).then((responseJson) => {
-      let narrowingData = map<any, TScenicSpot>(narrowing, responseJson)
-      setCityData(narrowingData)
-      apiTimes++
-    })
-  }
-
-  const narrowing = (item: TScenicSpot) => {
-    return {
-      ID: item.ID,
-      Name: item.Name,
-      DescriptionDetail: item.DescriptionDetail,
-      Description: item.Description
-    }
-  }
-
-  useEffect(() => {
-    console.log('cityData', cityData)
-  }, [cityData])
-
   return (
-    <div className="App">
-      <button onClick={() => getByCity(CityName.Taipei)}>get api</button>
-      {cityData &&
-        cityData.map((item: TScenicSpot) => (
-          <div key={item.ID}>
-            {item.Name}
-            {item.DescriptionDetail}
-            {item.Description}
-          </div>
-        ))}
-    </div>
+    <BrowserRouter>
+      <div className="h-screen flex flex-col">
+        <Header />
+
+        <Route>
+          <main className="container p-4 mx-auto">
+            <Route path="/">
+              <Home />
+            </Route>
+            <Route path="/list">
+              <List />
+            </Route>
+            <Route path="/detail">
+              <Detail />
+            </Route>
+          </main>
+        </Route>
+
+        <footer className="text-center flex justify-center items-center bg-black text-white sm:h-[40px] md:h-[60px]">台灣旅遊導覽</footer>
+      </div>
+    </BrowserRouter>
   )
 }
 

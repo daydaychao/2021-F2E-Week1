@@ -8,12 +8,26 @@ function API(endpoint: string) {
   return String(new globalThis.URL(endpoint, HOST))
 }
 
-async function get(endpoint: string): Promise<any> {
-  return fetch(API(endpoint)).then((res) => res.json())
-  // .then(tap(console.log))
+async function GET(endpoint: string): Promise<any> {
+  return fetch(API(endpoint))
+    .then((res) => res.json())
+    .then(tap(console.log))
 }
 
 export const ScenicSpot = {
-  getAll: () => get(`${urlScenicSpot}/`),
-  getByCityName: (cityName: CityName) => get(`${urlScenicSpot}${cityName}`)
+  getAll: () => GET(`${urlScenicSpot}/`),
+  getByCityName: (cityName: CityName) => GET(`${urlScenicSpot}${cityName}`)
 }
+
+// NOTE RESTFUL api 說明
+// GET 取
+// POST 新增
+// PATCH 更新
+// DELETE 刪除
+//
+// fetch(`https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/Taipei`)
+//   .then((response) => response.json())
+//   .then((data) => console.log('fetch', data))
+//   .catch((err) => {
+//     console.error(err)
+//   })
