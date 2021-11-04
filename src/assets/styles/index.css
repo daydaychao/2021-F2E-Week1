@@ -8,3 +8,7 @@
   background-position: center;
   background-size: cover;
 }
+
+input:focus-visible {
+  outline: none;
+}

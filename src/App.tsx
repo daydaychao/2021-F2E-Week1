@@ -7,22 +7,23 @@ function App() {
     <BrowserRouter>
       <div className="h-screen flex flex-col">
         <Header />
-
-        <Route>
-          <main className="container p-4 mx-auto">
+        <main className="container p-5 md:p-10 m-auto">
+          <Route>
             <Route path="/">
               <Home />
             </Route>
             <Route path="/list">
-              <List />
+              <Route path=":cityName">
+                <List />
+              </Route>
             </Route>
             <Route path="/detail">
               <Detail />
             </Route>
-          </main>
-        </Route>
+          </Route>
+        </main>
 
-        <footer className="text-center flex justify-center items-center bg-black text-white sm:h-[40px] md:h-[60px]">台灣旅遊導覽</footer>
+        <footer className="text-center flex justify-center items-center bg-black text-white min-h-[40px] md:h-[60px] text-sm">台灣旅遊導覽</footer>
       </div>
     </BrowserRouter>
   )

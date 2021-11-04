@@ -8,15 +8,15 @@ let apiTimes = 0
 export function List() {
   const [cityData, setCityData]: any = useState()
 
-  const getByCity = (city: CityName) => {
-    ScenicSpot.getByCityName(city).then((responseJson) => {
-      let narrowingData = map<any, TScenicSpot>(narrowing, responseJson)
+  const getCityData = (city: CityName) => {
+    ScenicSpot.getByCityName(city).then((resJson) => {
+      let narrowingData = map<any, TScenicSpot>(resJson, narrowing)
       setCityData(narrowingData)
       apiTimes++
     })
   }
 
-  const narrowing = (item: TScenicSpot) => {
+  function narrowing(item: TScenicSpot) {
     return {
       ID: item.ID,
       Name: item.Name,
@@ -32,7 +32,7 @@ export function List() {
   return (
     <>
       home
-      <button onClick={() => getByCity(CityName.Taipei)}>get api</button>
+      <button onClick={() => getScenicSpotByCity(CityName.Taipei)}>get api</button>
       {cityData &&
         cityData.map((item: TScenicSpot) => (
           <div key={item.ID}>
