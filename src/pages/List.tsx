@@ -32,7 +32,7 @@ export function List() {
   return (
     <>
       home
-      <button onClick={() => getScenicSpotByCity(CityName.Taipei)}>get api</button>
+      <button onClick={() => getCityData(CityName.Taipei)}>get api</button>
       {cityData &&
         cityData.map((item: TScenicSpot) => (
           <div key={item.ID}>
