@@ -14,7 +14,7 @@ export function List() {
 
   const getCityData = (city: CityName) => {
     ScenicSpot.getByCityName(city).then((resJson) => {
-      let narrowingData = map<any, TScenicSpot>(narrowing, resJson)
+      let narrowingData = map(narrowing, resJson)
       setCityData(narrowingData)
       apiTimes++
     })
