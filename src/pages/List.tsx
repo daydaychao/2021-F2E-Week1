@@ -5,14 +5,16 @@ import { CityName, ScenicSpot as TScenicSpot } from '@/types'
 import { useLocation, useParams } from 'react-router-dom'
 
 let apiTimes = 0
-
+type params = {
+  cityName: string
+}
 export function List() {
-  const { cityName } = useParams()
+  const { cityName }: params = useParams()
   const [cityData, setCityData]: any = useState()
 
   const getCityData = (city: CityName) => {
     ScenicSpot.getByCityName(city).then((resJson) => {
-      let narrowingData = map<any, TScenicSpot>(resJson, narrowing)
+      let narrowingData = map<any, TScenicSpot>(narrowing, resJson)
       setCityData(narrowingData)
       apiTimes++
     })
