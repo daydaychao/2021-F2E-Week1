@@ -2,10 +2,12 @@ import { ReactChild, ReactFragment, ReactPortal, useEffect, useState } from 'rea
 import { always, identity, map, memoizeWith, tap } from 'ramda'
 import { ScenicSpot } from '@/api/index'
 import { CityName, ScenicSpot as TScenicSpot } from '@/types'
+import { useLocation, useParams } from 'react-router-dom'
 
 let apiTimes = 0
 
 export function List() {
+  const { cityName } = useParams()
   const [cityData, setCityData]: any = useState()
 
   const getCityData = (city: CityName) => {
@@ -25,14 +27,20 @@ export function List() {
     }
   }
 
+  const log = {
+    useLocation: useLocation(),
+    useParams: useParams(),
+    cityName: cityName
+  }
   useEffect(() => {
-    console.log('cityData', cityData)
-  }, [cityData])
+    console.table(log)
+  }, [log])
 
   return (
     <>
-      home
-      <button onClick={() => getCityData(CityName.Taipei)}>get api</button>
+      <button type="button" className="bg-green-light" onClick={() => getCityData(CityName.Taipei)}>
+        get api
+      </button>
       {cityData &&
         cityData.map((item: TScenicSpot) => (
           <div key={item.ID}>

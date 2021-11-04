@@ -1,10 +1,15 @@
 import { useLocation } from 'react-router-dom'
 import { SearchIcon } from '@heroicons/react/solid'
+import { Props } from 'react'
 
-export function Header() {
+type HomeProps = {
+  headerStyle?: string
+}
+export function Header({ headerStyle }: HomeProps) {
   let isHome = true
-  let currentPath = useLocation().pathname
-  if (currentPath != '/') isHome = false
+  if (headerStyle != 'home') isHome = false
+
+  console.log('[Header] useLocation:', useLocation())
 
   return (
     <>

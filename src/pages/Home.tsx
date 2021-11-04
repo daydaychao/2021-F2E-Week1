@@ -11,7 +11,7 @@ const getCityNameZhTW = () => {
 }
 
 const getCityImg = () => {
-  return Object.keys(CityNameZhTW).map((img) => `./images/${img}.jpg`)
+  return Object.keys(CityNameZhTW).map((img) => `../public/images/${img}.jpg`)
 }
 
 const narrowing = (item: TScenicSpot) => {
