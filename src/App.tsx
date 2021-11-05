@@ -28,7 +28,7 @@ function App() {
           </Switch>
         </main>
 
-        <footer className="text-center flex justify-center items-center bg-black text-white min-h-[40px] md:h-[60px] text-sm">台灣旅遊導覽</footer>
+        <footer className="text-center flex justify-center items-center bg-black text-white min-h-[40px] md:h-[60px] text-sm">台灣旅遊導覽 2021-11-05 08:59</footer>
       </div>
     </BrowserRouter>
   )

@@ -27,7 +27,7 @@ export function Header({ headerStyle }: HomeProps) {
 
       {!isHome && (
         <header className="h-[99px] bg-green-light p-3">
-          <Link to={'./'}>
+          <Link to={'/'}>
             <div className="mx-auto container">
               <h1 className="text-3xl md:text-2xl mb-2">台灣旅遊景點導覽</h1>
               <h4 className="text-base md:text-lg ">全台灣觀光景點報你知，交通餐飲旅宿通通有!</h4>

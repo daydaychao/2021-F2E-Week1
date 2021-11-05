@@ -6,7 +6,7 @@ import { getCityNameEng, getCityNameZhTW } from '@/tools'
 import { Link } from 'react-router-dom'
 
 const getCityImg = () => {
-  return Object.keys(CityNameZhTW).map((img) => `../public/images/${img}.jpg`)
+  return Object.keys(CityNameZhTW).map((img) => `${import.meta.env.BASE_URL}images/${img}.jpg`)
 }
 
 export function Home() {
@@ -22,8 +22,8 @@ export function Home() {
       <h1 className="text-xl md:text-2xl font-bold mb-4">熱門景點</h1>
       <div className="grid grid-col md:grid-cols-3 gap-4 ">
         {citiesZhTW.map((city, index) => (
-          <Link to={'scenicSpot?city=' + citiesEng[index]}>
-            <div key={index} className={cssCard} style={{ backgroundImage: `url(${images[index]})` }}>
+          <Link key={index} to={'scenicSpot?city=' + citiesEng[index]}>
+            <div className={cssCard} style={{ backgroundImage: `url(${images[index]})` }}>
               <label className={cssCity}>{city}</label>
             </div>
           </Link>

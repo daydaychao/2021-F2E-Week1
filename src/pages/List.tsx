@@ -8,53 +8,31 @@ import { getCityNameZhTW, getCityNameEng, removeFromArray } from '@/tools'
 import { Checkbox } from '@/components/ui/'
 import { useQueryParam, NumberParam, StringParam } from 'use-query-params'
 
-function narrowing(item: TScenicSpot) {
-  return {
-    ID: item.ID,
-    City: item.City,
-    Name: item.Name,
-    Phone: item.Phone,
-    Address: item.Address,
-    ZipCode: item.ZipCode,
-    DescriptionDetail: item.DescriptionDetail,
-    Description: item.Description,
-    TravelInfo: item.TravelInfo,
-    OpenTime: item.OpenTime,
-    Picture: item.Picture,
-    MapUrl: item.MapUrl,
-    Position: item.Position,
-    Class1: item.Class1,
-    Class2: item.Class2,
-    Class3: item.Class3,
-    Level: item.Level,
-    WebsiteUrl: item.WebsiteUrl,
-    ParkingInfo: item.ParkingInfo,
-    ParkingPosition: item.ParkingPosition,
-    TicketInfo: item.TicketInfo,
-    Remarks: item.Remarks,
-    Keyword: item.Keyword
-  }
-}
+const filterData = () => {}
 
 let citiesEng = getCityNameEng()
 let citiesZhTW = getCityNameZhTW()
-let cityList: string[] = []
 let apiTimes = 0
 let hasAllScenicData = false
 
 export function List() {
+  let cityList: string[] = []
   const [cityQuery, setCityQuery] = useQueryParam('city', StringParam)
   const [listData, setListData]: any = useState([])
 
+  if (cityQuery) {
+    cityList.push(cityQuery.toString())
+  }
+
   const getListData = (city: CityName | string) => {
     ScenicSpot.getByCityName(city).then((resJson) => {
-      let narrowingData = map(narrowing, resJson)
-      setListData(narrowingData)
+      setListData(resJson)
       apiTimes++
     })
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('handleChange')
     if (cityList.includes(e.target.name)) {
       cityList = removeFromArray(cityList, e.target.name)
       setCityQuery(cityList.toString())
@@ -65,11 +43,11 @@ export function List() {
   }
 
   useEffect(() => {
-    if (!hasAllScenicData && cityQuery) {
-      getListData(cityQuery)
+    if (!hasAllScenicData && cityList.length === 1) {
+      getListData(cityList.toString())
     }
-    console.log(cityList)
-  }, [cityList])
+    console.log('cityList:', cityList)
+  }, [cityQuery])
 
   return (
     <>
@@ -101,13 +79,17 @@ export function List() {
           <small> {listData.length} 項景點</small>
           {listData &&
             listData.map((item: TScenicSpot) => (
-              <div key={item.ID}>
+              <div key={item.ID} className="flex flex-row">
                 <div>
                   <img src={item.Picture.PictureUrl1} />
                 </div>
-                {item.Name}
-                {item.DescriptionDetail}
-                <button className="btn-green">詳細介紹</button>
+                <div>
+                  <h1>{item.Name}</h1>
+                  <small>{item.Description}</small>
+                  <Link to={`/detail/${item.ID}`}>
+                    <button className="btn-green">詳細介紹</button>
+                  </Link>
+                </div>
               </div>
             ))}
         </article>
