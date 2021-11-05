@@ -21,6 +21,10 @@ git switch 你的分支
 ```
 git add .
 git-cz
+git push
+git switch Developer
+git merge 你的分支
+git push
 ```
 
 切換到主線
@@ -30,6 +34,13 @@ git switch master
 master merge developer
 git push
 npm run deploy
+git switch 你的分支(免得下次忘記)
+```
+
+## git 的工具
+
+```
+npm i -g git-cz
 ```
 
 ## Coding tool
