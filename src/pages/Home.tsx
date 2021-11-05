@@ -4,18 +4,29 @@ import { ScenicSpot } from '@/api/index'
 import { CityNameZhTW, ScenicSpot as TScenicSpot } from '@/types'
 import { getCityNameEng, getCityNameZhTW } from '@/tools'
 import { Link } from 'react-router-dom'
+import useStore from '@/store'
 
 const getCityImg = () => {
   return Object.keys(CityNameZhTW).map((img) => `${import.meta.env.BASE_URL}images/${img}.jpg`)
 }
 
 export function Home() {
+  const allLocation = useStore((state) => state.scenicSpotsAll)
   let citiesEng = getCityNameEng()
   let citiesZhTW = getCityNameZhTW()
   let images = getCityImg()
 
   const cssCard = 'bg-gray-300 bg-cover h-[220px] relative text-center overflow-hidden hover:cursor-pointer'
   const cssCity = 'text-white absolute bottom-2 left-2'
+
+  const getScenicSpotsAll = useStore((state) => state.getScenicSpotsAll)
+
+  useEffect(() => {
+    if (allLocation.length === 0) {
+      getScenicSpotsAll()
+    }
+    console.log('allLocation:', allLocation)
+  }, [allLocation])
 
   return (
     <>

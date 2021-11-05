@@ -1,15 +1,14 @@
-import { BrowserRouter, Redirect, Route, Router, Switch } from 'react-router-dom'
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
 import { Header } from '@/components/Header'
 import { Home, List, Detail } from '@/pages'
 import { QueryParamProvider } from 'use-query-params'
 
 function App() {
-  const stringifyOptions = { encode: false }
   return (
     <BrowserRouter>
       <div className="h-screen flex flex-col">
         <Switch>
-          <Route exact path="/">
+          <Route exact path="/home">
             <Header headerStyle="home" />
           </Route>
           <Route>
@@ -19,11 +18,11 @@ function App() {
 
         <main className="container p-5 md:p-10 mx-auto">
           <Switch>
-            <QueryParamProvider ReactRouterRoute={Route} stringifyOptions={stringifyOptions}>
-              <Route exact path="/" component={Home} />
+            <QueryParamProvider ReactRouterRoute={Route}>
+              <Route exact path="/home" component={Home} />
               <Route exact path="/scenicSpot" component={List} />
-              <Route exact path="/scenicSpot/:spotsId" component={Detail} />
-              <Redirect to="/" />
+              <Route path="/scenicSpot/:id" component={Detail} />
+              {/* <Redirect to="/home" /> */}
             </QueryParamProvider>
           </Switch>
         </main>

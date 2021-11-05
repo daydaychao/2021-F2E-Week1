@@ -1,12 +1,12 @@
-import React, { ReactChild, ReactFragment, ReactPortal, useEffect, useState } from 'react'
-import { always, identity, map, memoizeWith, tap } from 'ramda'
-import { ScenicSpot } from '@/api/index'
-import { CityName, ScenicSpot as TScenicSpot } from '@/types'
-import { Link, useLocation, useParams } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { SearchIcon, ChevronRightIcon } from '@heroicons/react/solid'
+import { useQueryParam, StringParam } from 'use-query-params'
+import { always, identity, map, memoizeWith, tap } from 'ramda'
+import { CityName, ScenicSpot as TScenicSpot } from '@/types'
+import { ScenicSpot } from '@/api/index'
 import { getCityNameZhTW, getCityNameEng, removeFromArray } from '@/tools'
 import { Checkbox } from '@/components/ui/'
-import { useQueryParam, NumberParam, StringParam } from 'use-query-params'
 
 const filterData = () => {}
 
@@ -52,9 +52,9 @@ export function List() {
   return (
     <>
       <section className="flex flex-row items-center border">
-        <Link to="{./}">首頁</Link>
+        <Link to="home">首頁</Link>
         <ChevronRightIcon className="h-4 w-4" />
-        <Link to="{./}">城市</Link>
+        <Link to="home">城市</Link>
         <ChevronRightIcon className="h-4 w-4" />
         景點
       </section>
@@ -86,7 +86,7 @@ export function List() {
                 <div>
                   <h1>{item.Name}</h1>
                   <small>{item.Description}</small>
-                  <Link to={`/detail/${item.ID}`}>
+                  <Link to={`scenicSpot/${item.ID}`}>
                     <button className="btn-green">詳細介紹</button>
                   </Link>
                 </div>

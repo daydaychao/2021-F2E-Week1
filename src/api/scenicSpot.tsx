@@ -44,7 +44,7 @@ async function GET(endpoint: string): Promise<any> {
 }
 
 export const ScenicSpot = {
-  getAll: () => GET(`${urlScenicSpot}/`),
+  getAll: () => GET(`${urlScenicSpot}?$top=5`),
   getByCityName: (cityName: CityName | string) => GET(`${urlScenicSpot}${cityName}`)
 }
 
