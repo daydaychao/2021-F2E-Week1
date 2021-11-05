@@ -16,7 +16,7 @@ async function GET(endpoint: string): Promise<any> {
 
 export const ScenicSpot = {
   getAll: () => GET(`${urlScenicSpot}/`),
-  getByCityName: (cityName: CityName) => GET(`${urlScenicSpot}${cityName}`)
+  getByCityName: (cityName: CityName | string) => GET(`${urlScenicSpot}${cityName}`)
 }
 
 // NOTE RESTFUL api 說明

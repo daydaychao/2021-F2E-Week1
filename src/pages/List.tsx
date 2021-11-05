@@ -4,14 +4,9 @@ import { ScenicSpot } from '@/api/index'
 import { CityName, ScenicSpot as TScenicSpot } from '@/types'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { SearchIcon, ChevronRightIcon } from '@heroicons/react/solid'
-import { getCityNameZhTW, getCityNameEng } from '@/tools'
+import { getCityNameZhTW, getCityNameEng, removeFromArray } from '@/tools'
 import { Checkbox } from '@/components/ui/'
 import { useQueryParam, NumberParam, StringParam } from 'use-query-params'
-
-const removeFromArray = (array: string[], item: string) => array.filter((v: string) => v !== item)
-const arrayToQueryParam = (array: string[]) => {
-  return array.toString()
-}
 
 function narrowing(item: TScenicSpot) {
   return {
@@ -41,15 +36,17 @@ function narrowing(item: TScenicSpot) {
   }
 }
 
-let apiTimes = 0
+let citiesEng = getCityNameEng()
+let citiesZhTW = getCityNameZhTW()
 let cityList: string[] = []
+let apiTimes = 0
+let hasAllScenicData = false
 
 export function List() {
   const [cityQuery, setCityQuery] = useQueryParam('city', StringParam)
-
   const [listData, setListData]: any = useState([])
 
-  const getListData = (city: CityName) => {
+  const getListData = (city: CityName | string) => {
     ScenicSpot.getByCityName(city).then((resJson) => {
       let narrowingData = map(narrowing, resJson)
       setListData(narrowingData)
@@ -58,27 +55,21 @@ export function List() {
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.name)
     if (cityList.includes(e.target.name)) {
-      console.log('include')
       cityList = removeFromArray(cityList, e.target.name)
-      setCityQuery(arrayToQueryParam(cityList))
+      setCityQuery(cityList.toString())
       return
     }
-    console.log('not include')
     cityList.push(e.target.name)
-    setCityQuery(arrayToQueryParam(cityList))
+    setCityQuery(cityList.toString())
   }
 
-  // const log = {
-  //   useLocation: useLocation()
-  // }
   useEffect(() => {
+    if (!hasAllScenicData && cityQuery) {
+      getListData(cityQuery)
+    }
     console.log(cityList)
-  }, [cityQuery])
-
-  let citiesEng = getCityNameEng()
-  let citiesZhTW = getCityNameZhTW()
+  }, [cityList])
 
   return (
     <>
