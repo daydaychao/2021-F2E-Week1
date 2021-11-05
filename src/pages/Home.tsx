@@ -1,17 +1,9 @@
 import { ReactChild, ReactFragment, ReactPortal, useEffect, useState } from 'react'
 import { always, identity, map, memoizeWith, tap } from 'ramda'
 import { ScenicSpot } from '@/api/index'
-import { CityNameZhTW } from '@/types'
-import { CityName, ScenicSpot as TScenicSpot } from '@/types'
-import { Link, useLocation } from 'react-router-dom'
-import { url } from 'inspector'
-
-const getCityNameEng = () => {
-  return Object.values(CityName)
-}
-const getCityNameZhTW = () => {
-  return Object.values(CityNameZhTW)
-}
+import { CityNameZhTW, ScenicSpot as TScenicSpot } from '@/types'
+import { getCityNameEng, getCityNameZhTW } from '@/tools'
+import { Link } from 'react-router-dom'
 
 const getCityImg = () => {
   return Object.keys(CityNameZhTW).map((img) => `../public/images/${img}.jpg`)

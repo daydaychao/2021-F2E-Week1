@@ -9,7 +9,7 @@ export type ScenicSpot = {
   TravelInfo: 'string' | undefined
   OpenTime: 'string' | undefined
   Picture: {
-    PictureUrl1: 'string' | undefined
+    PictureUrl1?: 'string' | undefined
     PictureDescription1: 'string' | undefined
     PictureUrl2: 'string' | undefined
     PictureDescription2: 'string' | undefined
@@ -40,8 +40,6 @@ export type ScenicSpot = {
   SrcUpdateTime: 'string' | undefined
   UpdateTime: 'string' | undefined
 }
-
-export type OData = {}
 
 export enum CityName {
   Taipei = 'Taipei',

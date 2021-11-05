@@ -21,7 +21,7 @@ export function Header({ headerStyle }: HomeProps) {
             <SearchIcon className="h-10 w-10" />
             <input className="h-full w-full p-5" placeholder="地點...博物館...旅遊城市"></input>
           </div>
-          <button className="rounded bg-green-light h-[40px] w-[170px] font-bold text-lg">搜尋</button>
+          <button className="btn-green w-[170px]">搜尋</button>
         </header>
       )}
 

@@ -14,7 +14,7 @@ function App() {
           </Route>
         </Switch>
 
-        <main className="container p-5 md:p-10 m-auto">
+        <main className="container p-5 md:p-10 mx-auto">
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/scenicSpot" component={List} />

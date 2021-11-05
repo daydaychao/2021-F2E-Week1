@@ -15,3 +15,7 @@
 - hero icons
 - <https://heroicons.com/>
 - <https://github.com/tailwindlabs/heroicons>
+
+## vscode extensions
+
+- css 認識 tailwindcss 的 rule <https://marketplace.visualstudio.com/items?itemName=csstools.postcss>
