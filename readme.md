@@ -2,9 +2,9 @@
 
 - Master (主線)
 - Developer (研發支線)
-- Dev/aaa
-- Dev/bbb
-- Dev/ccc
+- dev/xxx
+- dev/list
+- dev/detail
 
 ```
 git switch developer
