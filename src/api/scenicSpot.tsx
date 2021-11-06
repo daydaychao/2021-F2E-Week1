@@ -6,29 +6,29 @@ const urlScenicSpot = 'Tourism/ScenicSpot/'
 
 function narrowing(item: TScenicSpot) {
   return {
-    ID: item.ID,
-    City: item.City,
-    Name: item.Name,
-    Phone: item.Phone,
-    Address: item.Address,
-    ZipCode: item.ZipCode,
-    DescriptionDetail: item.DescriptionDetail,
-    Description: item.Description,
-    TravelInfo: item.TravelInfo,
-    OpenTime: item.OpenTime,
+    // ID: item.ID,
+    // City: item.City,
+    // Name: item.Name,
+    // Phone: item.Phone,
+    // Address: item.Address,
+    // ZipCode: item.ZipCode,
+    // DescriptionDetail: item.DescriptionDetail,
+    // Description: item.Description,
+    // TravelInfo: item.TravelInfo,
+    // OpenTime: item.OpenTime,
     Picture: item.Picture,
-    MapUrl: item.MapUrl,
-    Position: item.Position,
+    // MapUrl: item.MapUrl,
+    // Position: item.Position,
     Class1: item.Class1,
     Class2: item.Class2,
-    Class3: item.Class3,
-    Level: item.Level,
-    WebsiteUrl: item.WebsiteUrl,
-    ParkingInfo: item.ParkingInfo,
-    ParkingPosition: item.ParkingPosition,
-    TicketInfo: item.TicketInfo,
-    Remarks: item.Remarks,
-    Keyword: item.Keyword
+    Class3: item.Class3
+    // Level: item.Level,
+    // WebsiteUrl: item.WebsiteUrl,
+    // ParkingInfo: item.ParkingInfo,
+    // ParkingPosition: item.ParkingPosition,
+    // TicketInfo: item.TicketInfo,
+    // Remarks: item.Remarks,
+    // Keyword: item.Keyword
   }
 }
 
