@@ -30,7 +30,7 @@ export function Home() {
 
   return (
     <>
-      <h1 className="text-xl md:text-2xl font-bold mb-4">熱門景點</h1>
+      <h1 className="text-xl md:text-2xl font-bold mb-4">????</h1>
       <div className="grid grid-col md:grid-cols-3 gap-4 ">
         {citiesZhTW.map((city, index) => (
           <Link key={index} to={'scenicSpot?city=' + citiesEng[index]}>
