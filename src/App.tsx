@@ -16,7 +16,7 @@ function App() {
           </Route>
         </Switch>
 
-        <main className="container p-5 md:p-10 mx-auto">
+        <main className="container px-5 mb-20 md:px-10 mx-auto">
           <Switch>
             <QueryParamProvider ReactRouterRoute={Route}>
               <Route exact path="/home" component={Home} />
