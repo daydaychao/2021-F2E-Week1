@@ -2,21 +2,24 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SearchIcon, ChevronRightIcon } from '@heroicons/react/solid'
 import { useQueryParam, StringParam } from 'use-query-params'
-import { always, identity, includes, map, memoizeWith, tap } from 'ramda'
+import { always, identity, includes, map, memoizeWith, tap, find } from 'ramda'
 import { CityName, ScenicSpot as TScenicSpot } from '@/types'
 import { ScenicSpot } from '@/api/index'
 import { getCityNameZhTW, getCityNameEng, removeFromArray } from '@/tools'
 import { Checkbox } from '@/components/ui/'
+import { receiveMessageOnPort } from 'worker_threads'
+import useStore from '@/store'
 
 let citiesEng = getCityNameEng()
 let citiesZhTW = getCityNameZhTW()
-let apiTimes = 0
 let hasAllScenicData = false
 let searchTimer = false
+let apiTimes = 0
 
 export function List() {
-  let cityList: string[] = []
   const [cityQuery, setCityQuery] = useQueryParam('city', StringParam)
+  const cityList: string[] = []
+  const allLocation = useStore((state) => state.scenicSpotsAll)
   const [listData, setListData]: any = useState([])
   const [filterData, setFilterData]: any = useState([])
 
@@ -24,15 +27,30 @@ export function List() {
     cityList.push(cityQuery.toString())
   }
 
+  const matchWord = (n: any, word: string) => n.match((RegExp(`${word}`), 'i'))
+  const filterString = (item: []) => {
+    return Object.values(item).filter((x) => typeof x === 'string')
+  }
+
   const filterDataByString = (jsonData: any[], filterText: string) => {
     return jsonData.filter((item) => {
-      // includes(filterText, item)
-
-      let location: any[] = Object.values(item).filter((x) => typeof x === 'string')
-      return location.find((info: any, infoIdx) => {
-        return info.match(RegExp(`^${filterText}`), 'i')
-      })
+      const locationKeyword = filterString(item)
+      const hasMatched = locationKeyword.filter((word) => word == matchWord(word, filterText))
+      if (hasMatched.length > 0) {
+        console.log('hasMatched', hasMatched)
+        return hasMatched
+      }
     })
+
+    // console.log('a:', a)
+    // console.log('isSame:', filter(isSame, a))
+
+    // return a.find((info: any) => {
+    //   console.log('===============')
+    //   console.log('info', info)
+    //   console.log('===============')
+    //   return info.match(RegExp(`^${filterText}`), 'i')
+    // })
   }
 
   const getListData = (city: CityName | string) => {
@@ -44,15 +62,19 @@ export function List() {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!searchTimer) {
+      console.warn(e.target.value)
       const list = filterDataByString(listData, e.target.value)
-      console.log('list:', list)
       setFilterData(list)
       searchTimer = true
-      setTimeout(() => {
-        searchTimer = false
-      }, 500)
     }
+    setTimeout(() => {
+      searchTimer = false
+    }, 100)
   }
+
+  useEffect(() => {
+    console.log('filterData', filterData)
+  }, [filterData])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log('handleChange')
