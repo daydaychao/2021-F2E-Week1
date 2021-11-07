@@ -28,6 +28,7 @@ export function List() {
   const [cityList, setCityList] = useState([''])
 
   // 景點資料
+  const getAll = useStore((state) => state.getScenicSpotsAll)
   const allLocation = useStore((state) => state.scenicSpotsAll)
   const [listData, setListData]: any = useState([])
   const [filterData, setFilterData]: any = useState([])
@@ -103,17 +104,18 @@ export function List() {
     // 還沒取到全台灣資料
     if (allLocation.length === 0) {
       if (cityList.length === 1) {
-        console.log('還沒取到全台灣資料')
-        // getListData(cityList.toString())
-      }
-    }
-    // 已有全台灣資料
-    if (allLocation.length > 0) {
-      if (cityList.length === 0) {
-        setListData(allLocation)
+        console.log('取得全部資料中...')
+        getAll()
       }
     }
   }, [cityList])
+
+  useEffect(() => {
+    // 已有全台灣資料
+    if (allLocation.length > 0) {
+      setListData(allLocation)
+    }
+  }, [allLocation])
 
   // html左邊按鈕
   let htmlCityButton = (index: number, cityName: string) => <CheckboxBtn onChange={handleCheckboxBtn} key={index} name={citiesEng[index]} text={cityName} />
