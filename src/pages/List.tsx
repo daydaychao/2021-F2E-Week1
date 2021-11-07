@@ -6,50 +6,36 @@ import { always, identity, includes, map, memoizeWith, tap, find } from 'ramda'
 import { CityName, ScenicSpot as TScenicSpot } from '@/types'
 import { ScenicSpot } from '@/api/index'
 import { getCityNameZhTW, getCityNameEng, removeFromArray } from '@/tools'
-import { Checkbox } from '@/components/ui/'
+import { Checkbox, CheckboxBtn } from '@/components/ui/'
 import { receiveMessageOnPort } from 'worker_threads'
 import useStore from '@/store'
 
-let citiesEng = getCityNameEng()
-let citiesZhTW = getCityNameZhTW()
+const citiesEng = getCityNameEng()
+const citiesZhTW = getCityNameZhTW()
 let searchTimer = false
 let apiTimes = 0
 
+const getMatchWord = (x: any, word: string) => x.match(RegExp(word, 'g'))
+const getKeywordToArray = (items: []) => {
+  return Object.values(items).filter((x) => typeof x === 'string')
+}
+const updateCityList = () => {
+  console.log('updateCityList:', cityList)
+}
+let cityList: string[] = []
+let firstRender = true
 export function List() {
+  // 路徑參數
   const [cityQuery, setCityQuery] = useQueryParam('city', StringParam)
-  let cityList: string[] = []
+
+  // 景點資料
   const allLocation = useStore((state) => state.scenicSpotsAll)
   const [listData, setListData]: any = useState([])
   const [filterData, setFilterData]: any = useState([])
 
-  if (cityQuery) {
-    cityList.push(cityQuery.toString())
-  }
-
-  const matchWord = (n: any, word: string) => n.match((RegExp(`${word}`), 'i'))
-  const filterString = (item: []) => {
-    return Object.values(item).filter((x) => typeof x === 'string')
-  }
-
-  const filterDataByString = (jsonData: any[], filterText: string) => {
-    return jsonData.filter((item) => {
-      const locationKeyword = filterString(item)
-      const hasMatched = locationKeyword.filter((word) => word == matchWord(word, filterText))
-      if (hasMatched.length > 0) {
-        console.log('hasMatched', hasMatched)
-        return hasMatched
-      }
-    })
-
-    // console.log('a:', a)
-    // console.log('isSame:', filter(isSame, a))
-
-    // return a.find((info: any) => {
-    //   console.log('===============')
-    //   console.log('info', info)
-    //   console.log('===============')
-    //   return info.match(RegExp(`^${filterText}`), 'i')
-    // })
+  if (firstRender) {
+    if (cityQuery) cityList.push(cityQuery)
+    firstRender = false
   }
 
   const getListData = (city: CityName | string) => {
@@ -59,10 +45,20 @@ export function List() {
     })
   }
 
+  const searchByWord = (items: any[], word: string) => {
+    return items.filter((item) => {
+      const itemKeyword = getKeywordToArray(item)
+      const hasMatched = itemKeyword.find((v) => getMatchWord(v, word))
+      if (hasMatched) {
+        return true
+      }
+    })
+  }
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!searchTimer) {
       console.warn(e.target.value)
-      const list = filterDataByString(listData, e.target.value)
+      const list = searchByWord(listData, e.target.value)
       setFilterData(list)
       searchTimer = true
     }
@@ -71,27 +67,41 @@ export function List() {
     }, 100)
   }
 
-  useEffect(() => {
-    console.log('filterData', filterData)
-  }, [filterData])
+  const handleCheckboxBtn = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('e', e)
+    // cityList.push(e.target.name)
+    // console.log(cityList)
+    // setCityQuery(cityList.toString())
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('handleChange')
-    if (cityList.includes(e.target.name)) {
-      cityList = removeFromArray(cityList, e.target.name)
-      setCityQuery(cityList.toString())
-      return
-    }
-    cityList.push(e.target.name)
-    setCityQuery(cityList.toString())
+    // if (includes(e.target.name, cityList)) {
+    //   console.log('存在喔!', e.target.value)
+    //   cityList = removeFromArray(cityList, e.target.name)
+    //   setCityQuery(cityList.toString())
+    //   return
+    // }
   }
 
   useEffect(() => {
-    if (allLocation.length === 0 && cityList.length === 1) {
-      getListData(cityList.toString())
-      console.log('get1CityData')
+    updateCityList()
+
+    // 還沒取到全台灣資料
+    if (allLocation.length === 0) {
+      if (cityList.length === 1) {
+        console.log('getDataByCity')
+        getListData(cityList.toString())
+      }
+    }
+    // 已有全台灣資料
+    if (allLocation.length > 0) {
+      if (cityList.length === 0) {
+        setListData(allLocation)
+      }
     }
   }, [cityQuery])
+
+  // html左邊按鈕
+  let htmlCityButton = (index: number, cityName: string) => <CheckboxBtn onChange={handleCheckboxBtn} isChecked={citiesEng[index] === cityName} key={index} name={citiesEng[index]} text={cityName} />
+  // <Checkbox onChange={handleChange} isChecked={citiesEng[index] === cityName} key={index} name={citiesEng[index]} text={cityName} />
 
   return (
     <>
@@ -105,12 +115,31 @@ export function List() {
 
       <section className="flex flex-col md:flex-row">
         {/* 左邊 */}
+
         <article className="w-full hidden md:block w-3/12 inline-flex flex-shrink-0 flex-col">
           <h1 className="text-xl md:text-xl font-bold mb-3.5">篩選條件</h1>
+
+          <CheckboxBtn onChange={handleCheckboxBtn} name="allCity" text="全部" />
+
           <h4 className="text-sm md:text-sm font-black mb-2">北部</h4>
-          {citiesZhTW.map((cityName: string, index) => (
-            <Checkbox onChange={handleChange} isChecked={citiesEng[index] === cityName} key={index} name={citiesEng[index]} text={cityName} />
-          ))}
+          {citiesZhTW.map((cityName: string, index) => {
+            if (index < 4) return htmlCityButton(index, cityName)
+          })}
+
+          <h4 className="text-sm md:text-sm font-black mb-2">中部</h4>
+          {citiesZhTW.map((cityName: string, index) => {
+            if (index > 5 && index <= 13) return htmlCityButton(index, cityName)
+          })}
+
+          <h4 className="text-sm md:text-sm font-black mb-2">南部</h4>
+          {citiesZhTW.map((cityName: string, index) => {
+            if (index > 14 && index <= 16) return htmlCityButton(index, cityName)
+          })}
+
+          <h4 className="text-sm md:text-sm font-black mb-2">外島</h4>
+          {citiesZhTW.map((cityName: string, index) => {
+            if (index > 16 && index <= 19) return htmlCityButton(index, cityName)
+          })}
         </article>
         {/* 右邊 */}
         <article className="w-full md:w-9/12 inline-flex flex-col">
