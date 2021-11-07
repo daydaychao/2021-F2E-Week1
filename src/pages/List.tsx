@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SearchIcon, ChevronRightIcon } from '@heroicons/react/solid'
 import { useQueryParam, StringParam } from 'use-query-params'
@@ -19,14 +19,13 @@ const getMatchWord = (x: any, word: string) => x.match(RegExp(word, 'g'))
 const getKeywordToArray = (items: []) => {
   return Object.values(items).filter((x) => typeof x === 'string')
 }
-const updateCityList = () => {
-  console.log('updateCityList:', cityList)
-}
+
 let cityList: string[] = []
 let firstRender = true
 export function List() {
   // 路徑參數
   const [cityQuery, setCityQuery] = useQueryParam('city', StringParam)
+  const [cityList, setCityList] = useState([''])
 
   // 景點資料
   const allLocation = useStore((state) => state.scenicSpotsAll)
@@ -68,27 +67,44 @@ export function List() {
   }
 
   const handleCheckboxBtn = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('e', e)
-    // cityList.push(e.target.name)
-    // console.log(cityList)
-    // setCityQuery(cityList.toString())
+    // 全部城市
+    if (e.target.name === 'allCity') {
+      if (cityList.length === 1 && cityList[0] === 'allCity' && !e.target.checked) {
+        e.target.checked = true
+      }
+      cityList.map((city) => {
+        document.getElementById(city)?.click()
+      })
+      setCityList(['allCity'])
+      return
+    }
 
-    // if (includes(e.target.name, cityList)) {
-    //   console.log('存在喔!', e.target.value)
-    //   cityList = removeFromArray(cityList, e.target.name)
-    //   setCityQuery(cityList.toString())
-    //   return
-    // }
+    // 篩選城市
+    else if (e.target.name != 'allCity') {
+      //移除全部
+      if (cityList.includes('allCity')) {
+        const btnAll = document.getElementById('allCity') as HTMLInputElement
+        btnAll.checked = false
+        setCityList(removeFromArray(cityList, 'allCity'))
+      }
+
+      if (e.target.checked) {
+        setCityList((preValue) => [...preValue, e.target.name])
+      } else {
+        setCityList(removeFromArray(cityList, e.target.name))
+      }
+    }
   }
 
   useEffect(() => {
-    updateCityList()
+    setCityQuery(cityList.toString())
+    console.log('cityList:', cityList)
 
     // 還沒取到全台灣資料
     if (allLocation.length === 0) {
       if (cityList.length === 1) {
-        console.log('getDataByCity')
-        getListData(cityList.toString())
+        console.log('還沒取到全台灣資料')
+        // getListData(cityList.toString())
       }
     }
     // 已有全台灣資料
@@ -97,10 +113,10 @@ export function List() {
         setListData(allLocation)
       }
     }
-  }, [cityQuery])
+  }, [cityList])
 
   // html左邊按鈕
-  let htmlCityButton = (index: number, cityName: string) => <CheckboxBtn onChange={handleCheckboxBtn} isChecked={citiesEng[index] === cityName} key={index} name={citiesEng[index]} text={cityName} />
+  let htmlCityButton = (index: number, cityName: string) => <CheckboxBtn onChange={handleCheckboxBtn} key={index} name={citiesEng[index]} text={cityName} />
   // <Checkbox onChange={handleChange} isChecked={citiesEng[index] === cityName} key={index} name={citiesEng[index]} text={cityName} />
 
   return (
@@ -133,7 +149,7 @@ export function List() {
 
           <h4 className="text-sm md:text-sm font-black mb-2">南部</h4>
           {citiesZhTW.map((cityName: string, index) => {
-            if (index > 14 && index <= 16) return htmlCityButton(index, cityName)
+            if (index > 13 && index <= 16) return htmlCityButton(index, cityName)
           })}
 
           <h4 className="text-sm md:text-sm font-black mb-2">外島</h4>

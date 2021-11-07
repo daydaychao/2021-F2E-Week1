@@ -9,7 +9,7 @@ export function Header({ headerStyle }: HomeProps) {
   let isHome = true
   if (headerStyle != 'home') isHome = false
 
-  console.log('[Header] useLocation:', useLocation())
+  // console.log('[Header] useLocation:', useLocation())
 
   return (
     <>
