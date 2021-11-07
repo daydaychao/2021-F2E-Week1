@@ -9,12 +9,35 @@
 }
 
 /* Home */
+*{
+  font-family: arial,"Microsoft JhengHei","微軟正黑體",sans-serif;
+  outline: none;
+}
+
 .home-top-image {
   background-image: url(../images/top.jpg);
   background-position: center;
   background-size: cover;
 }
 
+/*
 input:focus-visible {
   outline: none;
+} */
+
+.desText{
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+}
+
+.list_btn_xy{
+  display: flex !important;
+  align-content: flex-end;
+}
+
+.border_g{
+  border-color: #00F395;
 }
