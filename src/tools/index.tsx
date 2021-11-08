@@ -1,2 +1,2 @@
 export * from './city'
-export * from './pureFunc'
+export * from './filter'

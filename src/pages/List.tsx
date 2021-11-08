@@ -5,121 +5,165 @@ import { useQueryParam, StringParam } from 'use-query-params'
 import { always, identity, includes, map, memoizeWith, tap, find } from 'ramda'
 import { CityName, ScenicSpot as TScenicSpot } from '@/types'
 import { ScenicSpot } from '@/api/index'
-import { getCityNameZhTW, getCityNameEng, removeFromArray } from '@/tools'
-import { Checkbox, CheckboxBtn } from '@/components/ui/'
-import { receiveMessageOnPort } from 'worker_threads'
+import { getCityNameZhTW, getCityNameEng, removeFromArray, filterByText, filterByCities, filterBySpecials, changeName } from '@/tools'
+import { CheckboxBtn } from '@/components/ui/'
 import useStore from '@/store'
+
+let searchTimer = false
+let renderTime = 0
+let apiTimes = 0
+let apiAllDataLoading = false
+let apiCityDataLoading = false
 
 const citiesEng = getCityNameEng()
 const citiesZhTW = getCityNameZhTW()
-let searchTimer = false
-let apiTimes = 0
 
-const getMatchWord = (x: any, word: string) => x.match(RegExp(word, 'g'))
-const getKeywordToArray = (items: []) => {
-  return Object.values(items).filter((x) => typeof x === 'string')
-}
-
-let cityList: string[] = []
-let firstRender = true
 export function List() {
   // 路徑參數
   const [cityQuery, setCityQuery] = useQueryParam('city', StringParam)
-  const [cityList, setCityList] = useState([''])
 
   // 景點資料
   const getAll = useStore((state) => state.getScenicSpotsAll)
   const allLocation = useStore((state) => state.scenicSpotsAll)
-  const [listData, setListData]: any = useState([])
-  const [filterData, setFilterData]: any = useState([])
+  const [listData, setListData]: any = useState([]) // 資料庫
+  const [filterData, setFilterData]: any[] = useState([]) // 篩選過資料庫後,dom渲染用
 
-  if (firstRender) {
-    if (cityQuery) cityList.push(cityQuery)
-    firstRender = false
-  }
+  //篩選條件
+  const [filterSearchText, setFilterSearchText]: any[] = useState([])
+  const [filterCities, setFilterCities]: any[] = useState([])
+  const [filterSpecials, setFilterSpecials]: any[] = useState([])
 
+  // api 取得單一城市資料
   const getListData = (city: CityName | string) => {
     ScenicSpot.getByCityName(city).then((resJson) => {
       setListData(resJson)
-      apiTimes++
+      apiTimes += 1
     })
   }
 
-  const searchByWord = (items: any[], word: string) => {
-    return items.filter((item) => {
-      const itemKeyword = getKeywordToArray(item)
-      const hasMatched = itemKeyword.find((v) => getMatchWord(v, word))
-      if (hasMatched) {
-        return true
-      }
-    })
-  }
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const filterController = async () => {
     if (!searchTimer) {
-      console.warn(e.target.value)
-      const list = searchByWord(listData, e.target.value)
+      console.log('%c文字', 'color:orange;background:black;padding:2px 10px', filterSearchText)
+      console.log('%c城市', 'color:orange;background:black;padding:2px 10px', filterCities)
+      console.log('%c特別', 'color:orange;background:black;padding:2px 10px', filterSpecials)
+
+      let list
+      if (allLocation.length > 0) {
+        list = map((x) => x, allLocation)
+      } else {
+        list = map((x) => x, listData)
+      }
+
+      // TODO 城市篩選
+      if (!filterCities.includes('allCity')) {
+        list = await filterByCities(filterCities, list)
+      }
+
+      // TODO 文字篩選
+      list = await filterByText(filterSearchText, list)
+
+      // TODO 特殊篩選
+      // list = await filterBySpecials(filterSpecials, list)
+
+      // 設定資料到filterList(dom渲染用)
+      console.log('篩選更新中 list', list)
       setFilterData(list)
+
       searchTimer = true
     }
     setTimeout(() => {
       searchTimer = false
-    }, 100)
+    }, 1000)
+  }
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilterSearchText(e.target.value)
   }
 
   const handleCheckboxBtn = (e: React.ChangeEvent<HTMLInputElement>) => {
     // 全部城市
     if (e.target.name === 'allCity') {
-      if (cityList.length === 1 && cityList[0] === 'allCity' && !e.target.checked) {
+      if (filterCities.length === 1 && filterCities[0] === 'allCity' && !e.target.checked) {
         e.target.checked = true
       }
-      cityList.map((city) => {
+      filterCities.map((city: string) => {
         document.getElementById(city)?.click()
       })
-      setCityList(['allCity'])
+      setFilterCities(['allCity'])
       return
     }
 
     // 篩選城市
     else if (e.target.name != 'allCity') {
       //移除全部
-      if (cityList.includes('allCity')) {
+      if (filterCities.includes('allCity')) {
         const btnAll = document.getElementById('allCity') as HTMLInputElement
         btnAll.checked = false
-        setCityList(removeFromArray(cityList, 'allCity'))
+        setFilterCities(removeFromArray('allCity', filterCities))
       }
 
       if (e.target.checked) {
-        setCityList((preValue) => [...preValue, e.target.name])
+        setFilterCities((preValue: string) => [...preValue, e.target.name])
       } else {
-        setCityList(removeFromArray(cityList, e.target.name))
+        setFilterCities(removeFromArray(e.target.name, filterCities))
       }
     }
   }
 
-  useEffect(() => {
-    setCityQuery(cityList.toString())
-    console.log('cityList:', cityList)
-
-    // 還沒取到全台灣資料
-    if (allLocation.length === 0) {
-      if (cityList.length === 1) {
-        console.log('取得全部資料中...')
-        getAll()
+  const checkData = async () => {
+    if (!apiCityDataLoading) {
+      if (listData.length === 0) {
+        console.log('資料初始化...')
+        apiCityDataLoading = true
+        await getListData('Taipei')
+        apiCityDataLoading = false
       }
     }
-  }, [cityList])
 
+    if (!apiAllDataLoading) {
+      if (allLocation.length === 0) {
+        if (includes('allCity', filterCities)) {
+          console.log('取得全部資料中...')
+          apiAllDataLoading = true
+          await await getAll()
+          apiAllDataLoading = false
+        }
+      }
+    }
+  }
+
+  if (renderTime == 0) {
+    if (cityQuery) filterCities.push(cityQuery)
+    checkData()
+  }
+
+  // watch 篩選
   useEffect(() => {
-    // 已有全台灣資料
+    checkData()
+    console.log('renderTime', renderTime)
+    if (renderTime > 0) {
+      setCityQuery(filterCities)
+      filterController()
+    }
+  }, [filterSearchText, filterCities])
+
+  // watch state全台景點資料庫
+  useEffect(() => {
     if (allLocation.length > 0) {
       setListData(allLocation)
     }
   }, [allLocation])
 
-  // html左邊按鈕
+  // watch 景點資料庫
+  useEffect(() => {
+    setFilterData(listData)
+  }, [listData])
+
+  // html 左邊按鈕
   let htmlCityButton = (index: number, cityName: string) => <CheckboxBtn onChange={handleCheckboxBtn} key={index} name={citiesEng[index]} text={cityName} />
   // <Checkbox onChange={handleChange} isChecked={citiesEng[index] === cityName} key={index} name={citiesEng[index]} text={cityName} />
+
+  renderTime += 1
 
   return (
     <>
@@ -167,13 +211,12 @@ export function List() {
           </div>
 
           <div className="flex justify-between">
-            <small className="my-4"> {listData.length} 項景點</small>
-            <button className="w-[120px] mb-2.5 rounded-none bg-gray-300 sm:hidden font-bold" onClick={() => getListData(CityName.Taipei)}>
+            <small className="my-4"> {filterData.length} 項景點</small>
+            <button className="w-[120px] mb-2.5 rounded-none bg-gray-300 sm:hidden font-bold">
               <ChevronRightIcon className="h-5 w-5 inline-block items-center" />
               篩選條件
             </button>
           </div>
-
           {filterData &&
             filterData.map((item: TScenicSpot) => (
               <div key={item.ID} className="flex flex-row overflow-hidden border rounded-md pr-9 h-60 mb-4 xl:w-3/4">
@@ -181,7 +224,7 @@ export function List() {
                   <img className="object-cover absolute top-50% left-50% block min-w-full min-h-full transform translate-x-50 translate-y-50" src={item.Picture.PictureUrl1} />
                 </div>
                 <div className="py-6 flex flex-col justify-between ml-5 font-bold w-3/5 relative md:w-3/5 xl:w-4/5">
-                  <h3 className="text-sm">基隆</h3>
+                  <h3 className="text-sm">{item.City}</h3>
                   <h1 className="mt-0.5">{item.Name}</h1>
                   <small className="text-sm mt-4 font-normal desText">{item.DescriptionDetail}</small>
                   <Link to={`scenicSpot/${item.ID}`} className="flex justify-end mt-3">
