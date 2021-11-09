@@ -9,22 +9,52 @@
 }
 
 /* Home */
+* {
+  font-family: arial, 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+  outline: none;
+}
+
 .home-top-image {
   background-image: url(../images/top.jpg);
   background-position: center;
   background-size: cover;
 }
 
+/*
 input:focus-visible {
   outline: none;
+} */
+
+.desText {
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
 }
 
-.btn {
-  @apply font-bold py-2 px-4 rounded;
+.list_btn_xy {
+  display: flex !important;
+  align-content: flex-end;
 }
-.btn-blue {
-  @apply bg-blue-500 text-white;
+
+.border_g {
+  border-color: #00f395;
 }
-.btn-blue:hover {
-  @apply bg-blue-700;
+
+/* UI */
+
+/* CheckboxBtn元件 */
+.checkbox-btn input[type='checkbox'] {
+  display: none;
+}
+.checkbox-btn input[type='checkbox'] + label {
+  @apply inline-block cursor-pointer;
+  @apply px-3 m-1 rounded;
+  @apply border-2 border-green-light focus:outline-none;
+  @apply hover:text-green-500;
+  @apply transition ease-in duration-200;
+}
+.checkbox-btn input[type='checkbox']:checked + label {
+  @apply bg-green-light;
 }
