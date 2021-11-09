@@ -1,8 +1,24 @@
 import { ScenicSpot as TScenicSpot, CityName } from '@/types'
 import { always, identity, map, memoizeWith, tap } from 'ramda'
+import jsSHA from 'jssha'
 
 const HOST = 'https://ptx.transportdata.tw/MOTC/v2/'
 const urlScenicSpot = 'Tourism/ScenicSpot/'
+
+function getAuthorizationHeader() {
+  //  填入自己 ID、KEY 開始
+
+  let AppID = 'bcee97e768f0431784373e00f3539404'
+  let AppKey = 'bAY5MKsU_isyBjPsnFHcHlJgd1k'
+  //  填入自己 ID、KEY 結束
+  let GMTString = new Date().toUTCString()
+  let ShaObj = new jsSHA('SHA-1', 'TEXT')
+  ShaObj.setHMACKey(AppKey, 'TEXT')
+  ShaObj.update('x-date: ' + GMTString)
+  let HMAC = ShaObj.getHMAC('B64')
+  let Authorization = 'hmac username="' + AppID + '", algorithm="hmac-sha1", headers="x-date", signature="' + HMAC + '"'
+  return { Authorization: Authorization, 'X-Date': GMTString }
+}
 
 function narrowing(item: TScenicSpot) {
   return {
@@ -37,14 +53,17 @@ function API(endpoint: string) {
 }
 
 async function GET(endpoint: string): Promise<any> {
-  return fetch(API(endpoint))
+  return fetch(API(endpoint), {
+    method: 'GET',
+    headers: getAuthorizationHeader()
+  })
     .then((res) => res.json())
     .then((resJson) => resJson.map(narrowing, resJson))
     .then(tap(console.log))
 }
-
+const filter = '?$filter=Picture%2FPictureUrl1%20ne%20null%20&$format=JSON'
 export const ScenicSpot = {
-  getAll: () => GET(`${urlScenicSpot}?$top=1000`),
+  getAll: () => GET(`${urlScenicSpot}${filter}`),
   getByCityName: (cityName: CityName | string) => GET(`${urlScenicSpot}${cityName}`)
 }
 
