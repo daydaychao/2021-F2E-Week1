@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SearchIcon, ChevronRightIcon } from '@heroicons/react/solid'
 import { useQueryParam, StringParam } from 'use-query-params'
@@ -8,6 +8,7 @@ import { ScenicSpot } from '@/api/index'
 import { getCityNameZhTW, getCityNameEng, removeFromArray, filterByText, filterByCities, filterBySpecials, changeName } from '@/tools'
 import { CheckboxBtn } from '@/components/ui/'
 import useStore from '@/store'
+import debounce from 'lodash/debounce'
 
 let searchTimer = false
 let renderTime = 0
@@ -76,8 +77,16 @@ export function List() {
     }, 1000)
   }
 
+  const debouncedFilter = useCallback(
+    debounce((text) => {
+      console.log('%c debounce', 'color:orange;background:black;padding:2px 10px')
+      setFilterSearchText(text)
+    }, 800),
+    []
+  )
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterSearchText(e.target.value)
+    debouncedFilter(e.target.value)
   }
 
   const handleCheckboxBtn = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -167,12 +176,12 @@ export function List() {
 
   return (
     <>
-      <section className="text-sm my-7 flex flex-row items-center">
+      <section className="flex flex-row items-center">
         <Link to="/home">首頁</Link>
         <ChevronRightIcon className="h-4 w-4" />
         <Link to="/home">城市</Link>
         <ChevronRightIcon className="h-4 w-4" />
-        景點
+        <Link to="/scenicSpot">景點</Link>
       </section>
 
       <section className="flex flex-col md:flex-row">

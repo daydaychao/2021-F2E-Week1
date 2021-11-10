@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@types/leaflet": "^1.7.5",
+    "@types/lodash": "^4.14.176",
     "@types/node": "^16.11.6",
     "@types/ramda": "^0.27.46",
     "@types/react": "^17.0.34",
@@ -32,6 +33,7 @@
     "@vitejs/plugin-react": "^1.0.0",
     "autoprefixer": "^10.4.0",
     "gh-pages": "^3.2.3",
+    "lodash.debounce": "^4.0.8",
     "postcss": "^8.3.11",
     "tailwindcss": "^2.2.19",
     "typescript": "^4.3.2",

@@ -22,7 +22,7 @@ function App() {
               <Route exact path="/home" component={Home} />
               <Route exact path="/scenicSpot" component={List} />
               <Route path="/scenicSpot/:id" component={Detail} />
-              {/* <Redirect to="/home" /> */}
+              <Redirect to="/home" />
             </QueryParamProvider>
           </Switch>
         </main>
