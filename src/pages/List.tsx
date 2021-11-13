@@ -30,7 +30,7 @@ export function List() {
 
   // 景點資料
   const getAll = useStore((state) => state.getScenicSpotsAll)
-  let allLocation = useStore((state) => state.scenicSpotsAll)
+  const allLocation = useStore((state) => state.scenicSpotsAll)
   const [listData, setListData]: any = useState([]) // 資料庫
   const [filterData, setFilterData]: any[] = useState([]) // 篩選過資料庫後,dom渲染用
 
