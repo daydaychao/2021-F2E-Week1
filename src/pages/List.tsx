@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import { SearchIcon, ChevronRightIcon } from '@heroicons/react/solid'
 import { useQueryParam, StringParam } from 'use-query-params'
 import { always, identity, includes, map, memoizeWith, tap, find } from 'ramda'
-import { CityName, ScenicSpot as TScenicSpot } from '@/types'
+import { CityName, ScenicSpot as TScenicSpot, Specials } from '@/types'
 import { ScenicSpot } from '@/api/index'
-import { getCityNameZhTW, getCityNameEng, removeFromArray, filterByText, filterByCities, filterBySpecials, changeName, getSpecials } from '@/tools'
+import { getCityNameZhTW, getCityNameEng, removeFromArray, filterByText, filterByCities, filterBySpecials, changeName, getEnumValues, getEnumKeys } from '@/tools'
 import { CheckboxBtn } from '@/components/ui/'
 import useStore from '@/store'
 import debounce from 'lodash/debounce'
@@ -18,12 +18,14 @@ let apiCityDataLoading = false
 
 const citiesEng = getCityNameEng()
 const citiesZhTW = getCityNameZhTW()
-const specials = getSpecials()
-console.log('%c specials:', 'color:lightblue;background:black;padding:2px 10px', specials)
+const specialsEng = getEnumKeys(Specials)
+const specialsZhTW = getEnumValues(Specials)
 
 export function List() {
   // 路徑參數
   const [cityQuery, setCityQuery] = useQueryParam('city', StringParam)
+  const [textQuery, setTextQuery] = useQueryParam('text', StringParam)
+  const [specialQuery, setSpecialQuery] = useQueryParam('special', StringParam)
 
   // 景點資料
   const getAll = useStore((state) => state.getScenicSpotsAll)
@@ -57,19 +59,20 @@ export function List() {
         list = map((x) => x, listData)
       }
 
-      // TODO 城市篩選
+      // 城市
       if (!filterCities.includes('allCity')) {
         list = await filterByCities(filterCities, list)
       }
 
-      // TODO 文字篩選
+      // 文字
       list = await filterByText(filterSearchText, list)
 
-      // TODO 特殊篩選
-      // list = await filterBySpecials(filterSpecials, list)
+      // 景點類別
+      list = await filterBySpecials(filterSpecials, list)
 
       // 設定資料到filterList(dom渲染用)
       console.log('篩選更新中 list', list)
+      // updateParams()
       setFilterData(list)
 
       searchTimer = true
@@ -94,7 +97,7 @@ export function List() {
   const handleCheckboxBtn = (e: React.ChangeEvent<HTMLInputElement>) => {
     // 全部城市
     if (e.target.name === 'allCity') {
-      if (filterCities.length === 1 && filterCities[0] === 'allCity' && !e.target.checked) {
+      if (filterCities.length === 1 && filterCities[0] === 'allCity') {
         e.target.checked = true
       }
       filterCities.map((city: string) => {
@@ -121,8 +124,15 @@ export function List() {
     }
   }
 
-  //特殊類別
-  const handleSpecialBtn = (e: React.ChangeEvent<HTMLInputElement>) => {}
+  //景點類別
+  const handleSpecialBtn = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // TODO
+    if (e.target.checked) {
+      setFilterSpecials((preValue: string) => [...preValue, e.target.name])
+    } else {
+      setFilterSpecials(removeFromArray(e.target.name, filterSpecials))
+    }
+  }
 
   const checkData = async () => {
     if (!apiCityDataLoading) {
@@ -154,12 +164,13 @@ export function List() {
   // watch 篩選
   useEffect(() => {
     checkData()
-    console.log('renderTime', renderTime)
     if (renderTime > 0) {
       setCityQuery(filterCities)
+      setTextQuery(filterSearchText)
+      setSpecialQuery(filterSpecials)
       filterController()
     }
-  }, [filterSearchText, filterCities])
+  }, [filterSearchText, filterCities, filterSpecials])
 
   // watch state全台景點資料庫
   useEffect(() => {
@@ -174,11 +185,11 @@ export function List() {
   }, [listData])
 
   // html 城市類別
-  let htmlCityButton = (index: number, cityName: string) => <CheckboxBtn onChange={handleCheckboxBtn} key={index} name={citiesEng[index]} text={cityName} />
+  let htmlCityButton = (index: number, cityName: string) => <CheckboxBtn onChange={handleCheckboxBtn} key={index} id={citiesEng[index]} name={citiesEng[index]} text={cityName} />
   // <Checkbox onChange={handleChange} isChecked={citiesEng[index] === cityName} key={index} name={citiesEng[index]} text={cityName} />
 
   // html 熱門類別
-  let htmlSpecialButton = (index: number, special: string) => <CheckboxBtn onChange={handleSpecialBtn} key={index} name={special} text={special} />
+  let htmlSpecialButton = (index: number, special: string) => <CheckboxBtn onChange={handleSpecialBtn} key={index} id={specialsEng[index]} name={special} text={special} />
 
   renderTime += 1
 
@@ -197,8 +208,9 @@ export function List() {
         <article className="filter-wrapper">
           <h1 className="text-xl md:text-xl font-bold mb-3.5">篩選條件</h1>
 
-          <CheckboxBtn onChange={handleCheckboxBtn} name="allCity" text="全台景點" />
+          <CheckboxBtn onChange={handleCheckboxBtn} id="allCity" name="allCity" text="全台景點" />
 
+          <div className="h-4"></div>
           <h4 className="text-sm md:text-sm font-black mb-2">北部</h4>
           <div className="checkbox-btn-wrapper">
             {citiesZhTW.map((cityName: string, index) => {
@@ -229,7 +241,7 @@ export function List() {
 
           <h4 className="text-sm md:text-sm font-black mb-2">景點類別</h4>
           <div className="checkbox-btn-wrapper">
-            {specials.map((special: string, index: number) => {
+            {specialsZhTW.map((special: string, index: number) => {
               return htmlSpecialButton(index, special)
             })}
           </div>

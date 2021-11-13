@@ -91,20 +91,20 @@ export enum CityNameZhTW {
 }
 
 export enum Specials {
-  a = '休閒農業類',
-  b = '古蹟類',
-  c = '國家風景區類',
-  d = '小吃/特產類',
-  e = '廟宇類',
-  f = '文化類',
-  g = '森林遊樂區類',
-  h = '溫泉類',
-  i = '生態類',
-  j = '自然風景類',
-  k = '藝術類',
-  l = '觀光工廠類',
-  m = '遊憩類',
-  n = '都會公園類',
-  o = '體育健身類',
-  other = '其他'
+  LeisureAgriculture = '休閒農業類',
+  Historic = '古蹟類',
+  NationalScenic = '國家風景區類',
+  SnacksSpecialties = '小吃/特產類',
+  Temples = '廟宇類',
+  Culture = '文化類',
+  ForestRecreation = '森林遊樂區類',
+  HotSpring = '溫泉類',
+  Ecological = '生態類',
+  NaturalScenery = '自然風景類',
+  Art = '藝術類',
+  SightseeingFactory = '觀光工廠類',
+  Recreation = '遊憩類',
+  MetropolitanPark = '都會公園類',
+  SportsFitness = '體育健身類',
+  Other = '其他'
 }
