@@ -2,6 +2,7 @@ import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
 import { Header } from '@/components/Header'
 import { Home, List, Detail } from '@/pages'
 import { QueryParamProvider } from 'use-query-params'
+import { StarIcon } from '@heroicons/react/solid'
 
 function App() {
   return (
@@ -27,7 +28,14 @@ function App() {
           </Switch>
         </main>
 
-        <footer className="text-center flex justify-center items-center bg-black text-white min-h-[40px] md:h-[60px] text-sm">台灣旅遊導覽 2021-11-05 08:59</footer>
+        <footer className="text-center flex justify-center items-center bg-black text-white min-h-[40px] md:h-[60px] text-sm">
+          <div className="flex flex-row items-center mr-2">
+            <StarIcon className="h-4 w-4" />
+            台灣旅遊導覽
+            <StarIcon className="h-4 w-4" />
+          </div>
+          <small>十萬塊的星之碎片製作出品</small>
+        </footer>
       </div>
     </BrowserRouter>
   )
