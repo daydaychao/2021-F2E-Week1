@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { ChevronRightIcon, LocationMarkerIcon, BadgeCheckIcon, PhoneIcon } from '@heroicons/react/solid'
 import { LeafletMap } from '@/components/ui/LeafletMap'
-import errorImg from '@/assets/images/nopic.jpg'
 import autumnImg from '@/assets/images/autumn-in-taiwan-header.png'
 
 type IdParams = {
@@ -37,13 +36,15 @@ export function Detail() {
       setImgStyle(() => {
         let result = {
           backgroundImage: autumnImg,
-          backgroundSize: 'cover'
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
         }
         imgMap.forEach((v) => {
           if (v && v.includes('http')) {
             result = {
               backgroundImage: `url(${v})`,
-              backgroundSize: 'cover'
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
             }
           }
         })

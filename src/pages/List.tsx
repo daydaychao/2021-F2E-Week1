@@ -30,7 +30,7 @@ export function List() {
 
   // 景點資料
   const getAll = useStore((state) => state.getScenicSpotsAll)
-  const allLocation = useStore((state) => state.scenicSpotsAll)
+  let allLocation = useStore((state) => state.scenicSpotsAll)
   const [listData, setListData]: any = useState([]) // 資料庫
   const [filterData, setFilterData]: any[] = useState([]) // 篩選過資料庫後,dom渲染用
 
@@ -47,6 +47,7 @@ export function List() {
   // 1文字搜尋
   const debouncedHandleSearch = useCallback(
     debounce((text) => {
+      setLoading(true)
       console.log('%c debounce', 'color:orange;background:black;padding:2px 10px')
       setFilterSearchText(text)
     }, 800),
@@ -58,6 +59,7 @@ export function List() {
 
   // 2 城市
   const handleCheckboxBtn = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoading(true)
     console.log('%c handleCheckboxBtn', 'color:orange;background:black;padding:2px 10px')
 
     // 全部城市
@@ -91,7 +93,8 @@ export function List() {
 
   // 3 特別景點
   const handleSpecialBtn = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
+    setLoading(true)
+    if (e.target.checked && !filterSpecials.includes(e.target.name)) {
       setFilterSpecials((preValue: string) => [...preValue, e.target.name])
     } else {
       setFilterSpecials(removeFromArray(e.target.name, filterSpecials))
@@ -100,8 +103,6 @@ export function List() {
 
   // 管理搜尋條件
   const filterController = async () => {
-    setLoading(true)
-
     console.log('%c文字', 'color:orange;background:black;padding:2px 10px', filterSearchText)
     console.log('%c城市', 'color:orange;background:black;padding:2px 10px', filterCities)
     console.log('%c特別', 'color:orange;background:black;padding:2px 10px', filterSpecials)
@@ -129,9 +130,7 @@ export function List() {
     // 設定資料到filterList(dom渲染用)
     console.log('篩選更新中...')
     // updateParams()
-    await setFilterData(list)
-
-    setLoading(false)
+    setFilterData(list)
   }
 
   // api 取得單一城市資料
@@ -184,12 +183,13 @@ export function List() {
   useEffect(() => {
     checkData()
     if (renderTime > 0) {
-      debounceFn(() => {
+      debounceFn(async () => {
         console.log('%c useEffect: debounce filter', 'color:orange;background:black;padding:2px 10px')
         setCityQuery(filterCities)
         setTextQuery(filterSearchText)
         setSpecialQuery(filterSpecials)
-        filterController()
+        await filterController()
+        setLoading(false)
       })
     }
   }, [filterSearchText, filterCities, filterSpecials])
@@ -198,6 +198,13 @@ export function List() {
   useEffect(() => {
     setFilterData(listData)
   }, [listData])
+
+  // store的資料變更時
+  useEffect(() => {
+    if (allLocation.length > 0 && listData.length === 0) {
+      setListData(allLocation)
+    }
+  }, [allLocation])
 
   // DOM HTML ===================================================
 
@@ -235,7 +242,7 @@ export function List() {
           <h4 className="text-sm md:text-sm font-black mb-2">北部</h4>
           <div className="checkbox-btn-wrapper">
             {citiesZhTW.map((cityName: string, index) => {
-              if (index < 4) return htmlCityButton(index, cityName)
+              if (index <= 4) return htmlCityButton(index, cityName)
             })}
           </div>
 
@@ -256,7 +263,7 @@ export function List() {
           <h4 className="text-sm md:text-sm font-black mb-2">外島</h4>
           <div className="checkbox-btn-wrapper">
             {citiesZhTW.map((cityName: string, index) => {
-              if (index > 16 && index <= 19) return htmlCityButton(index, cityName)
+              if (index > 16 && index <= 21) return htmlCityButton(index, cityName)
             })}
           </div>
 
@@ -280,9 +287,8 @@ export function List() {
 
           <div className="flex justify-between">
             {loading && (
-              <small className="my-4">
-                {' '}
-                <Spin /> 項景點
+              <small className="my-4 flex flex-row items-end">
+                <Spin /> <span>項景點</span>
               </small>
             )}
             {!loading && <small className="my-4"> {filterData.length} 項景點</small>}

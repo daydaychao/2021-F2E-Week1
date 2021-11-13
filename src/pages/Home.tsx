@@ -25,7 +25,6 @@ export function Home() {
     if (allLocation.length === 0) {
       getScenicSpotsAll()
     }
-    console.log('allLocation:', allLocation)
   }, [allLocation])
 
   return (
