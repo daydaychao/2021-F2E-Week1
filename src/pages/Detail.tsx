@@ -51,7 +51,7 @@ export function Detail() {
 
   return (
     <>
-      <section className="flex flex-row items-center">
+      <section className="flex flex-row items-center my-4">
         <Link to="/home">首頁</Link>
         <ChevronRightIcon className="h-4 w-4" />
         <Link to="/home">城市</Link>

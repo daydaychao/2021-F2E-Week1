@@ -89,3 +89,22 @@ export enum CityNameZhTW {
   KinmenCounty = '金門縣',
   LienchiangCounty = '連江縣'
 }
+
+export enum Specials {
+  a = '休閒農業類',
+  b = '古蹟類',
+  c = '國家風景區類',
+  d = '小吃/特產類',
+  e = '廟宇類',
+  f = '文化類',
+  g = '森林遊樂區類',
+  h = '溫泉類',
+  i = '生態類',
+  j = '自然風景類',
+  k = '藝術類',
+  l = '觀光工廠類',
+  m = '遊憩類',
+  n = '都會公園類',
+  o = '體育健身類',
+  other = '其他'
+}

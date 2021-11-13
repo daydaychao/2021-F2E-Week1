@@ -5,7 +5,7 @@ import { useQueryParam, StringParam } from 'use-query-params'
 import { always, identity, includes, map, memoizeWith, tap, find } from 'ramda'
 import { CityName, ScenicSpot as TScenicSpot } from '@/types'
 import { ScenicSpot } from '@/api/index'
-import { getCityNameZhTW, getCityNameEng, removeFromArray, filterByText, filterByCities, filterBySpecials, changeName } from '@/tools'
+import { getCityNameZhTW, getCityNameEng, removeFromArray, filterByText, filterByCities, filterBySpecials, changeName, getSpecials } from '@/tools'
 import { CheckboxBtn } from '@/components/ui/'
 import useStore from '@/store'
 import debounce from 'lodash/debounce'
@@ -18,6 +18,8 @@ let apiCityDataLoading = false
 
 const citiesEng = getCityNameEng()
 const citiesZhTW = getCityNameZhTW()
+const specials = getSpecials()
+console.log('%c specials:', 'color:lightblue;background:black;padding:2px 10px', specials)
 
 export function List() {
   // 路徑參數
@@ -119,6 +121,9 @@ export function List() {
     }
   }
 
+  //特殊類別
+  const handleSpecialBtn = (e: React.ChangeEvent<HTMLInputElement>) => {}
+
   const checkData = async () => {
     if (!apiCityDataLoading) {
       if (listData.length === 0) {
@@ -168,52 +173,73 @@ export function List() {
     setFilterData(listData)
   }, [listData])
 
-  // html 左邊按鈕
+  // html 城市類別
   let htmlCityButton = (index: number, cityName: string) => <CheckboxBtn onChange={handleCheckboxBtn} key={index} name={citiesEng[index]} text={cityName} />
   // <Checkbox onChange={handleChange} isChecked={citiesEng[index] === cityName} key={index} name={citiesEng[index]} text={cityName} />
+
+  // html 熱門類別
+  let htmlSpecialButton = (index: number, special: string) => <CheckboxBtn onChange={handleSpecialBtn} key={index} name={special} text={special} />
 
   renderTime += 1
 
   return (
     <>
-      <section className="flex flex-row items-center">
+      <section className="flex flex-row items-center my-4">
         <Link to="/home">首頁</Link>
         <ChevronRightIcon className="h-4 w-4" />
         <Link to="/home">城市</Link>
         <ChevronRightIcon className="h-4 w-4" />
-        <Link to="/scenicSpot">景點</Link>
+        <span className="text-gray-400">景點</span>
       </section>
 
       <section className="flex flex-col md:flex-row">
-        {/* 左邊 */}
-
-        <article className="w-full hidden md:block w-3/12 inline-flex flex-shrink-0 flex-col">
+        {/* 篩選條件 */}
+        <article className="filter-wrapper">
           <h1 className="text-xl md:text-xl font-bold mb-3.5">篩選條件</h1>
 
-          <CheckboxBtn onChange={handleCheckboxBtn} name="allCity" text="全部" />
+          <CheckboxBtn onChange={handleCheckboxBtn} name="allCity" text="全台景點" />
 
           <h4 className="text-sm md:text-sm font-black mb-2">北部</h4>
-          {citiesZhTW.map((cityName: string, index) => {
-            if (index < 4) return htmlCityButton(index, cityName)
-          })}
+          <div className="checkbox-btn-wrapper">
+            {citiesZhTW.map((cityName: string, index) => {
+              if (index < 4) return htmlCityButton(index, cityName)
+            })}
+          </div>
 
           <h4 className="text-sm md:text-sm font-black mb-2">中部</h4>
-          {citiesZhTW.map((cityName: string, index) => {
-            if (index > 5 && index <= 13) return htmlCityButton(index, cityName)
-          })}
+          <div className="checkbox-btn-wrapper">
+            {citiesZhTW.map((cityName: string, index) => {
+              if (index > 5 && index <= 13) return htmlCityButton(index, cityName)
+            })}
+          </div>
 
           <h4 className="text-sm md:text-sm font-black mb-2">南部</h4>
-          {citiesZhTW.map((cityName: string, index) => {
-            if (index > 13 && index <= 16) return htmlCityButton(index, cityName)
-          })}
+          <div className="checkbox-btn-wrapper">
+            {citiesZhTW.map((cityName: string, index) => {
+              if (index > 13 && index <= 16) return htmlCityButton(index, cityName)
+            })}
+          </div>
 
           <h4 className="text-sm md:text-sm font-black mb-2">外島</h4>
-          {citiesZhTW.map((cityName: string, index) => {
-            if (index > 16 && index <= 19) return htmlCityButton(index, cityName)
-          })}
+          <div className="checkbox-btn-wrapper">
+            {citiesZhTW.map((cityName: string, index) => {
+              if (index > 16 && index <= 19) return htmlCityButton(index, cityName)
+            })}
+          </div>
+
+          <h4 className="text-sm md:text-sm font-black mb-2">景點類別</h4>
+          <div className="checkbox-btn-wrapper">
+            {specials.map((special: string, index: number) => {
+              return htmlSpecialButton(index, special)
+            })}
+          </div>
         </article>
+
+        {/* 桌機空白 */}
+        <article className="sm:hidden md:inline-flex md:w-1/12"></article>
+
         {/* 右邊 */}
-        <article className="w-full md:w-9/12 inline-flex flex-col">
+        <article className="md:inline-flex flex-col w-full p-5">
           <div className="flex flex-row mb-7 items-center bg-white pl-4 h-[50px] border-black border-2 md:h-[75px] xl:w-3/4">
             <SearchIcon className="h-10 w-10" />
             <input className="h-full w-full p-5" placeholder="地點...博物館...旅遊城市" onChange={handleSearch}></input>
@@ -228,7 +254,7 @@ export function List() {
           </div>
           {filterData &&
             filterData.map((item: TScenicSpot) => (
-              <div key={item.ID} className="flex flex-row overflow-hidden border rounded-md pr-9 h-60 mb-4 xl:w-3/4">
+              <div key={item.ID} className="flex flex-row overflow-hidden bg-white border rounded-[10px] pr-9 h-60 mb-4 xl:w-3/4">
                 <div className="overflow-hidden min-w-[110px] relative w-2/5">
                   <img className="object-cover absolute top-50% left-50% block min-w-full min-h-full transform translate-x-50 translate-y-50" src={item.Picture.PictureUrl1} />
                 </div>
