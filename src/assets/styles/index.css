@@ -49,8 +49,19 @@ input:focus-visible {
 .filter-wrapper {
   @apply bg-white border p-5;
   @apply fixed h-screen w-full z-20 top-0 left-0; /*mobile*/
-  @apply static md:inline-flex md:flex-col md:w-[300px] md:rounded-[10px]; /*desktop*/
+  @apply sm:relative md:inline-flex md:flex-col md:w-[300px] md:rounded-[10px]; /*desktop*/
 }
+
+.filter-md-spacing {
+  @apply sm:hidden md:inline-flex;
+  flex-basis: 40px;
+}
+medai-query (max-width: 768px) {
+  filter-md-spaceing {
+    flex-basis: 0;
+  }
+}
+
 /* UI */
 
 /* CheckboxBtn元件包住,3格一排 */

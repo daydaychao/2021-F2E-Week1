@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react'
+import React, { useEffect, useCallback, useState, SyntheticEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { SearchIcon, ChevronRightIcon } from '@heroicons/react/solid'
 import { useQueryParam, StringParam } from 'use-query-params'
@@ -9,7 +9,7 @@ import { getCityNameZhTW, getCityNameEng, removeFromArray, filterByText, filterB
 import { CheckboxBtn } from '@/components/ui/'
 import useStore from '@/store'
 import debounce from 'lodash/debounce'
-
+import errorImg from '@/assets/images/nopic.jpg'
 let searchTimer = false
 let renderTime = 0
 let apiTimes = 0
@@ -134,6 +134,12 @@ export function List() {
     }
   }
 
+  const handleImageError = ({ target }: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const theTarget = target as HTMLInputElement
+    theTarget.onerror = null
+    theTarget.src = errorImg
+  }
+
   const checkData = async () => {
     if (!apiCityDataLoading) {
       if (listData.length === 0) {
@@ -248,11 +254,11 @@ export function List() {
         </article>
 
         {/* 桌機空白 */}
-        <article className="sm:hidden md:inline-flex md:w-1/12"></article>
+        <article className="filter-md-spacing"></article>
 
         {/* 右邊 */}
         <article className="md:inline-flex flex-col w-full p-5">
-          <div className="flex flex-row mb-7 items-center bg-white pl-4 h-[50px] border-black border-2 md:h-[75px] xl:w-3/4">
+          <div className="flex flex-row items-center bg-white border-black border-2 h-[50px] md:h-[75px] xl:w-3/4 mb-2 pl-4">
             <SearchIcon className="h-10 w-10" />
             <input className="h-full w-full p-5" placeholder="地點...博物館...旅遊城市" onChange={handleSearch}></input>
           </div>
@@ -268,7 +274,7 @@ export function List() {
             filterData.map((item: TScenicSpot) => (
               <div key={item.ID} className="flex flex-row overflow-hidden bg-white border rounded-[10px] pr-9 h-60 mb-4 xl:w-3/4">
                 <div className="overflow-hidden min-w-[110px] relative w-2/5">
-                  <img className="object-cover absolute top-50% left-50% block min-w-full min-h-full transform translate-x-50 translate-y-50" src={item.Picture.PictureUrl1} />
+                  <img src={item.Picture.PictureUrl1} onError={handleImageError} className="object-cover absolute top-50% left-50% block min-w-full min-h-full transform translate-x-50 translate-y-50" />
                 </div>
                 <div className="py-6 flex flex-col justify-between ml-5 font-bold w-3/5 relative md:w-3/5 xl:w-4/5">
                   <h3 className="text-sm">{item.City}</h3>
@@ -277,7 +283,7 @@ export function List() {
                   <Link to={`scenicSpot/${item.ID}`} className="flex justify-end mt-3">
                     <button className="w-40 bg-white border border_g text-lg font-bold inline-block px-8 py-2">
                       詳細介紹
-                      <ChevronRightIcon className="hidden h-5 w-5 inline-block align-text-bottom md:inline-block" />
+                      <ChevronRightIcon className="hidden md:inline-block align-text-bottom h-5 w-5" />
                     </button>
                   </Link>
                 </div>
