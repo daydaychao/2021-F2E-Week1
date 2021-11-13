@@ -8,7 +8,7 @@ function App() {
     <BrowserRouter>
       <div className="h-screen flex flex-col">
         <Switch>
-          <Route exact path="/home">
+          <Route exact path="/2021-F2E-Week1/home">
             <Header headerStyle="home" />
           </Route>
           <Route>
@@ -19,10 +19,10 @@ function App() {
         <main className="container px-5 mb-20 mx-auto">
           <Switch>
             <QueryParamProvider ReactRouterRoute={Route}>
-              <Route exact path="/home" component={Home} />
-              <Route exact path="/scenicSpot" component={List} />
-              <Route path="/scenicSpot/:id" component={Detail} />
-              <Redirect to="/home" />
+              <Route exact path="/2021-F2E-Week1/home" component={Home} />
+              <Route exact path="/2021-F2E-Week1/scenicSpot" component={List} />
+              <Route path="/2021-F2E-Week1/scenicSpot/:id" component={Detail} />
+              <Redirect to="/2021-F2E-Week1/home" />
             </QueryParamProvider>
           </Switch>
         </main>

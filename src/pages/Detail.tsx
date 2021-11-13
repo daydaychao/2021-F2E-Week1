@@ -5,6 +5,9 @@ import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { ChevronRightIcon, LocationMarkerIcon, BadgeCheckIcon, PhoneIcon } from '@heroicons/react/solid'
 import { LeafletMap } from '@/components/ui/LeafletMap'
+import errorImg from '@/assets/images/nopic.jpg'
+import autumnImg from '@/assets/images/autumn-in-taiwan-header.png'
+
 type IdParams = {
   id: string
 }
@@ -33,7 +36,7 @@ export function Detail() {
       let imgMap = new Map(Object.entries(detail.Picture))
       setImgStyle(() => {
         let result = {
-          backgroundImage: `url(https://p3n3w9t2.rocketcdn.me/wp-content/uploads/2020/09/autumn-in-taiwan-header.png)`,
+          backgroundImage: autumnImg,
           backgroundSize: 'cover'
         }
         imgMap.forEach((v) => {
@@ -52,11 +55,11 @@ export function Detail() {
   return (
     <>
       <section className="flex flex-row items-center my-4">
-        <Link to="/home">首頁</Link>
+        <Link to="/2021-F2E-Week1/home">首頁</Link>
         <ChevronRightIcon className="h-4 w-4" />
-        <Link to="/home">城市</Link>
+        <Link to="/2021-F2E-Week1/home">城市</Link>
         <ChevronRightIcon className="h-4 w-4" />
-        <Link to="/scenicSpot">景點</Link>
+        <Link to="/2021-F2E-Week1/scenicSpot">景點</Link>
         <ChevronRightIcon className="h-4 w-4" />
         {detail?.Name}
       </section>
