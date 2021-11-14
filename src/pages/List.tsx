@@ -6,7 +6,7 @@ import { useQueryParam, StringParam } from 'use-query-params'
 import { always, identity, includes, map, memoizeWith, tap, find } from 'ramda'
 import { CityName, ScenicSpot as TScenicSpot, Specials } from '@/types'
 import { ScenicSpot } from '@/api/index'
-import { getCityNameZhTW, getCityNameEng, removeFromArray, filterByText, filterByCities, filterBySpecials, changeName, getEnumValues, getEnumKeys } from '@/tools'
+import { getCityNameZhTW, getCityNameEng, removeFromArray, filterByText, filterByCities, filterBySpecials, changeName, getEnumValues, getEnumKeys, debounceFn } from '@/tools'
 import { CheckboxBtn, Spin } from '@/components/ui/'
 import useStore from '@/store'
 import debounce from 'lodash/debounce'
@@ -49,20 +49,25 @@ export function List() {
   // const [renderData, setRenderData] = useState([])
   // const containerRef = useRef(null)
   const [isShowFilter, setIsShowFilter] = useState(false)
+  const [isScrollingDown, setIsScrollingDown] = useState(false)
 
   // Filters ===================================================
 
-  // 1文字搜尋
-  const debouncedHandleSearch = useCallback(
-    debounce((text) => {
-      setLoading(true)
-      console.log('%c debounce', 'color:orange;background:black;padding:2px 10px')
-      setFilterSearchText(text)
+  const debounceFn = useCallback(
+    debounce((callback) => {
+      callback()
     }, 800),
     []
   )
+
+  // 1文字搜尋
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    debouncedHandleSearch(e.target.value)
+    const text: string = e.target.value
+    debounceFn(async () => {
+      setLoading(true)
+      console.log('%c debounce', 'color:orange;background:black;padding:2px 10px')
+      setFilterSearchText(text)
+    })
   }
 
   // 2 城市
@@ -107,6 +112,18 @@ export function List() {
     } else {
       setFilterSpecials(removeFromArray(e.target.name, filterSpecials))
     }
+  }
+
+  const handleScroll = () => {
+    debounceFn(async () => {
+      if (window.scrollY >= 100) {
+        setIsScrollingDown(true)
+        console.log('拉下了')
+      } else {
+        setIsScrollingDown(false)
+        console.log('沒拉下')
+      }
+    })
   }
 
   // 管理搜尋條件
@@ -191,13 +208,6 @@ export function List() {
 
   // useEffect (Watch) ===================================================
 
-  const debounceFn = useCallback(
-    debounce((callback) => {
-      callback()
-    }, 1000),
-    []
-  )
-
   // 篩選 filterSearchText, filterCities, filterSpecials
   useEffect(() => {
     if (renderTime > 0) {
@@ -262,6 +272,8 @@ export function List() {
   // }, [containerRef])
 
   useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
     let cityQueryArray = (cityQuery as string).split(',')
     cityQueryArray.map((city: string) => {
       console.log('city:', city)
@@ -275,6 +287,7 @@ export function List() {
     return () => {
       //router離開的時候清空
       renderTime = 0
+      window.removeEventListener('scroll', handleScroll)
     }
   }, [])
 
@@ -377,9 +390,9 @@ export function List() {
               </small>
             )}
             {!loading && <small> {filterData.length} 項景點</small>}
-            {!loading && filterData.length === 0 && <small className="text-green-400"> 查無資料,請重新篩選</small>}
+            {!loading && filterData.length === 0 && <small className="text-green-600"> 查無資料,請重新篩選</small>}
             <button
-              className="md:hidden font-bold bg-gray-300 rounded-none align-middle w-[120px] h-[30px] mb-2"
+              className=" ${isScrollingDown ? 'fixed-at-top' : ''} md:hidden font-bold bg-gray-300 rounded-none align-middle w-[120px] h-[30px] mb-2"
               onClick={() => {
                 setIsShowFilter(!isShowFilter)
                 return null

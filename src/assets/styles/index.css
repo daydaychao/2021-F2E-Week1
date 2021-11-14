@@ -45,19 +45,19 @@ input:focus-visible {
 .filter-wrapper {
   @apply bg-white border p-5;
   @apply fixed h-screen w-full z-20 top-0 left-0; /*mobile*/
-  @apply sm:relative md:inline-flex md:h-full md:flex-col md:w-[300px] md:rounded-[10px]; /*desktop*/
+  @apply sm:relative md:inline-flex md:h-full md:flex-col md:w-[235px] md:rounded-[10px]; /*desktop*/
 }
 
 .filter-md-spacing {
   @apply hidden;
   @apply md:inline-flex;
-  flex-basis: 40px;
+  flex-basis: 1.5rem;
 }
 
 .filter-list {
-  @apply flex-col max-w-full;
+  width: calc(100% - 200px);
+  @apply flex-col w-full max-w-full;
   @apply md:inline-flex;
-  flex: 3;
 }
 
 @media (max-width: 768px) {
