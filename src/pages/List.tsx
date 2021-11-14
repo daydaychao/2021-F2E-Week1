@@ -116,7 +116,7 @@ export function List() {
 
   const handleScroll = () => {
     debounceFn(async () => {
-      if (window.scrollY >= 100) {
+      if (window.scrollY >= 500) {
         setIsScrollingDown(true)
         console.log('拉下了')
       } else {
@@ -377,30 +377,45 @@ export function List() {
         <article className="filter-md-spacing"></article>
 
         {/* 右邊 */}
-        <article className="filter-list ${isShowFilter ? 'overflow-y-hidden' : ''}">
-          <div className="flex flex-row items-center bg-gray-100 border-black border-2 rounded-md h-[50px] md:h-[75px] mb-4 md:mb-2 pl-4">
-            <SearchIcon className="h-10 w-10" />
-            <input id="searchInput" className="h-full w-full p-5 bg-gray-100" placeholder="地點...博物館...旅遊城市" onChange={handleSearch}></input>
-          </div>
-          <div className="flex items-center justify-between md:py-4">
-            {loading && (
-              <small className="flex flex-row items-end">
-                <Spin />
-                <span>資料讀取中...</span>
-              </small>
-            )}
-            {!loading && <small> {filterData.length} 項景點</small>}
-            {!loading && filterData.length === 0 && <small className="text-green-600"> 查無資料,請重新篩選</small>}
-            <button
-              className=" ${isScrollingDown ? 'fixed-at-top' : ''} md:hidden font-bold bg-gray-300 rounded-none align-middle w-[120px] h-[30px] mb-2"
-              onClick={() => {
-                setIsShowFilter(!isShowFilter)
-                return null
-              }}>
-              <FilterIcon className="inline-block items-center font-bold h-4 w-4 mr-2" />
-              <small>篩選條件</small>
-            </button>
-          </div>
+        <article className="filter-list">
+          {isScrollingDown && (
+            <section className="fixed top-0 right-0 z-10">
+              <button
+                className="md:hidden font-bold bg-gray-300 rounded-none align-middle w-[120px] h-[30px] mb-2"
+                onClick={() => {
+                  setIsShowFilter(!isShowFilter)
+                  return null
+                }}>
+                <FilterIcon className="inline-block items-center font-bold h-4 w-4 mr-2" />
+                <small>篩選條件</small>
+              </button>
+            </section>
+          )}
+          <section>
+            <div className="flex flex-row items-center bg-gray-100 border-black border-2 rounded-md h-[50px] md:h-[75px] mb-4 md:mb-2 pl-4">
+              <SearchIcon className="h-10 w-10" />
+              <input id="searchInput" className="h-full w-full p-5 bg-gray-100" placeholder="地點...博物館...旅遊城市" onChange={handleSearch}></input>
+            </div>
+            <div className="flex items-center justify-between md:py-4">
+              {loading && (
+                <small className="flex flex-row items-end">
+                  <Spin />
+                  <span>資料讀取中...</span>
+                </small>
+              )}
+              {!loading && <small> {filterData.length} 項景點</small>}
+              {!loading && filterData.length === 0 && <small className="text-green-600"> 查無資料,請重新篩選</small>}
+              <button
+                className="md:hidden font-bold bg-gray-300 rounded-none align-middle w-[120px] h-[30px] mb-2"
+                onClick={() => {
+                  setIsShowFilter(!isShowFilter)
+                  return null
+                }}>
+                <FilterIcon className="inline-block items-center font-bold h-4 w-4 mr-2" />
+                <small>篩選條件</small>
+              </button>
+            </div>
+          </section>
 
           {filterData &&
             filterData.map((item: TScenicSpot, index: number) => (
