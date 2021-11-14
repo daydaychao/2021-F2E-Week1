@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Switch, useLocation } from 'react-router-dom'
 import TopBarProgress from 'react-topbar-progress-indicator'
 
-const CustomSwitch = ({ children }) => {
+const CustomSwitch = ({ children }: any) => {
   TopBarProgress.config({
     barColors: {
       '0': '#00f395',
