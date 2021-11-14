@@ -41,21 +41,25 @@ input:focus-visible {
   align-content: flex-end;
 }
 
-.border_g {
-  border-color: #00f395;
-}
-
 /* List.tsx */
 .filter-wrapper {
   @apply bg-white border p-5;
   @apply fixed h-screen w-full z-20 top-0 left-0; /*mobile*/
-  @apply sm:relative md:inline-flex md:flex-col md:w-[300px] md:rounded-[10px]; /*desktop*/
+  @apply sm:relative md:inline-flex md:h-full md:flex-col md:w-[300px] md:rounded-[10px]; /*desktop*/
 }
 
 .filter-md-spacing {
-  @apply sm:hidden md:inline-flex;
+  @apply hidden;
+  @apply md:inline-flex;
   flex-basis: 40px;
 }
+
+.filter-list {
+  @apply flex-col max-w-full;
+  @apply md:inline-flex;
+  flex: 3;
+}
+
 @media (max-width: 768px) {
   filter-md-spaceing {
     flex-basis: 0;
@@ -80,8 +84,9 @@ input:focus-visible {
 }
 .checkbox-btn input[type='checkbox'] + label {
   @apply inline-block cursor-pointer;
-  @apply py-1.5 px-2 m-0.5 rounded-[10px];
-  @apply border border-green-light focus:outline-none;
+  @apply py-2 px-2 m-1; /* mobile */
+  @apply md:py-1.5 md:px-2 md:m-0.5; /* desktop */
+  @apply rounded-[10px] border border-green-light focus:outline-none;
   @apply text-xs hover:text-green-500;
   @apply transition ease-in duration-200;
 }

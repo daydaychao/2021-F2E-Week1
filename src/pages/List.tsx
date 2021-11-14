@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback, useState, SyntheticEvent, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { SearchIcon, ChevronRightIcon } from '@heroicons/react/solid'
+import { FilterIcon } from '@heroicons/react/outline'
 import { useQueryParam, StringParam } from 'use-query-params'
 import { always, identity, includes, map, memoizeWith, tap, find } from 'ramda'
 import { CityName, ScenicSpot as TScenicSpot, Specials } from '@/types'
@@ -219,8 +220,6 @@ export function List() {
     }
   }, [listData])
 
-
-
   useEffect(() => {
     apiAllDataLoading = false
     if (allLocation.length > 0) {
@@ -239,14 +238,14 @@ export function List() {
   //   let observer = new IntersectionObserver(() => {
   //     let loadData: any = [];
   //     let counter = 10;
-  
+
   //     // 每次最多額外加入10筆資料
   //     if (filterData.length != 0) {
   //       while (renderData.length + loadData.length < filterData.length && counter != 0) {
   //         loadData.push(filterData[renderData.length + 10 - counter]);
   //         counter--;
   //       }
-  
+
   //       setRenderData(renderData.concat(loadData));
   //     }
   //   });
@@ -267,6 +266,10 @@ export function List() {
       console.log('city:', city)
       document.getElementById(city)?.click()
     })
+
+    if (textQuery) {
+      ;(document.getElementById('searchInput') as HTMLInputElement).value = textQuery
+    }
 
     return () => {
       //router離開的時候清空
@@ -299,12 +302,17 @@ export function List() {
         <span className="text-gray-400">景點</span>
       </section>
 
-      <section className="flex flex-col md:flex-row">
+      <section className="flex flex-col md:flex-row md:justify-between">
         {/* 篩選條件 */}
-        <article className={`filter-wrapper ${isShowFilter ? "" : "hidden"} md:block`}>
+        <article className={`filter-wrapper ${isShowFilter ? '' : 'hidden'} md:inline-flex `}>
           <div className="flex flex-row justify-between">
             <h1 className="text-xl md:text-xl font-bold mb-3.5">篩選條件</h1>
-            <button className="flex items-center justify-center border h-6 w-6 rounded-full" onClick={() => { setIsShowFilter(!isShowFilter); return null; }}>
+            <button
+              className="md:hidden flex items-center justify-center border h-6 w-6 rounded-full"
+              onClick={() => {
+                setIsShowFilter(!isShowFilter)
+                return null
+              }}>
               <svg className="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 18 18">
                 <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
               </svg>
@@ -354,47 +362,50 @@ export function List() {
         <article className="filter-md-spacing"></article>
 
         {/* 右邊 */}
-        <article className="md:inline-flex flex-col w-full p-5">
-          <div className="flex flex-row items-center bg-white border-black border-2 h-[50px] md:h-[75px] xl:w-3/4 mb-2 pl-4">
+        <article className="filter-list">
+          <div className="flex flex-row items-center bg-gray-100 border-black border-2 rounded-md h-[50px] md:h-[75px] mb-4 md:mb-2 pl-4">
             <SearchIcon className="h-10 w-10" />
-            <input className="h-full w-full p-5" placeholder="地點...博物館...旅遊城市" onChange={handleSearch}></input>
+            <input id="searchInput" className="h-full w-full p-5 bg-gray-100" placeholder="地點...博物館...旅遊城市" onChange={handleSearch}></input>
           </div>
-
-          <div className="flex justify-between">
+          <div className="flex items-center justify-between md:py-4">
             {loading && (
-              <small className="my-4 flex flex-row items-end">
+              <small className="flex flex-row items-end">
                 <Spin />
                 <span>資料讀取中...</span>
               </small>
             )}
-            {!loading && <small className="my-4"> {filterData.length} 項景點</small>}
-            <button className="w-[120px] mb-2.5 rounded-none bg-gray-300 md:hidden font-bold" onClick={() => { setIsShowFilter(!isShowFilter); return null; }}>
-              <ChevronRightIcon className="h-5 w-5 inline-block items-center" />
-              篩選條件
+            {!loading && <small> {filterData.length} 項景點</small>}
+            <button
+              className="md:hidden font-bold bg-gray-300 rounded-none align-middle w-[120px] h-[30px] mb-2"
+              onClick={() => {
+                setIsShowFilter(!isShowFilter)
+                return null
+              }}>
+              <FilterIcon className="inline-block items-center font-bold h-4 w-4 mr-2" />
+              <small>篩選條件</small>
             </button>
           </div>
 
           {filterData &&
-          filterData.map((item: TScenicSpot, index: number) => (
-              <div key={item.ID} className="flex flex-row overflow-hidden bg-white border rounded-[10px] pr-9 h-60 mb-4 xl:w-3/4">
-                <div className="overflow-hidden min-w-[110px] relative w-2/5">
+            filterData.map((item: TScenicSpot, index: number) => (
+              <div key={item.ID} className="relative flex flex-col md:flex-row overflow-hidden bg-white border rounded-[10px] w-full h-[20rem] md:h-60 mb-4 md:pr-9">
+                <div className="relative md:overflow-hidden md:min-w-[110px] md:w-2/5">
                   <Link to={`scenicSpot/${item.ID}`}>
                     <img src={item.Picture.PictureUrl1} onError={htmlImageError} className="object-cover absolute top-50% left-50% block min-w-full min-h-full transform translate-x-50 translate-y-50" />
                   </Link>
                 </div>
-                <div className="py-6 flex flex-col justify-between ml-5 font-bold w-3/5 relative md:w-3/5 xl:w-4/5">
-                  <h3 className="text-sm">{item.City}</h3>
+                <div className="absolute md:relative bg-white bottom-0 font-bold flex flex-col justify-between p-4 md:py-6 md:px-4 md:ml-5 w-full md:w-3/5 xl:w-4/5 h-3/8 md:h-auto">
+                  {item.City && <h3 className="text-sm">{item.City}</h3>}
                   <h1 className="mt-0.5">{item.Name}</h1>
-                  <small className="text-sm mt-4 font-normal desText">{item.DescriptionDetail}</small>
-                  <Link to={`scenicSpot/${item.ID}`} className="flex justify-end mt-3">
-                    <button className="w-40 bg-white border border_g text-lg font-bold inline-block px-8 py-2">
+                  <small className="text-xs md:text-sm mt-1 md:mt-4 font-normal desText">{item.DescriptionDetail}</small>
+                  <Link to={`scenicSpot/${item.ID}`} className=" md:flex justify-end mt-3">
+                    <button className=" bg-white border border-green-light font-bold inline-block text-sm md:text-lg w-full md:w-40 px-8 py-2">
                       詳細介紹
                       <ChevronRightIcon className="hidden md:inline-block align-text-bottom h-5 w-5" />
                     </button>
                   </Link>
                 </div>
               </div>
-
             ))}
         </article>
       </section>

@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { SearchIcon } from '@heroicons/react/solid'
 import { Props } from 'react'
 
@@ -6,10 +6,21 @@ type HomeProps = {
   headerStyle?: string
 }
 export function Header({ headerStyle }: HomeProps) {
+  const history = useHistory()
   let isHome = true
   if (headerStyle != 'home') isHome = false
 
-  // console.log('[Header] useLocation:', useLocation())
+  const handleKeyEnter = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.keyCode === 13) {
+      e.preventDefault()
+      handleSearchAndGo()
+    }
+  }
+
+  const handleSearchAndGo = () => {
+    const textValue = (document.getElementById('searchInput') as HTMLInputElement).value
+    history.push(`/2021-F2E-Week1/scenicSpot/?city=allCity&text=${textValue}`)
+  }
 
   return (
     <>
@@ -19,9 +30,11 @@ export function Header({ headerStyle }: HomeProps) {
           <h4 className="text-white text-base md:text-3xl mb-5">全台灣觀光景點報你知，交通餐飲旅宿通通有!</h4>
           <div className="flex flex-row items-center bg-white px-2 h-[50px] md:h-[75px] w-3/4 rounded-lg mb-4 border-2 md:border-4 border-black">
             <SearchIcon className="h-10 w-10" />
-            <input className="h-full w-full p-5" placeholder="地點...博物館...旅遊城市"></input>
+            <input id="searchInput" className="h-full w-full p-5" placeholder="地點...博物館...旅遊城市" onKeyPress={handleKeyEnter}></input>
           </div>
-          <button className="btn-green w-[170px]">搜尋</button>
+          <button className="btn-green w-[170px]" type="button" onClick={handleSearchAndGo}>
+            搜尋
+          </button>
         </header>
       )}
 
@@ -29,8 +42,8 @@ export function Header({ headerStyle }: HomeProps) {
         <header className="bg-green-light p-3">
           <Link to="home">
             <div className="mx-auto container px-5 md:px-10 font-bold">
-              <h1 className="text-3xl md:text-2xl mb-2">台灣旅遊景點導覽</h1>
-              <h4 className="text-base md:text-lg ">全台灣觀光景點報你知，交通餐飲旅宿通通有!</h4>
+              <h1 className="text-2xl text-3xl md:text-2xl mb-2">台灣旅遊景點導覽</h1>
+              <h4 className="text-sm md:text-md ">全台灣觀光景點報你知，交通餐飲旅宿通通有!</h4>
             </div>
           </Link>
         </header>
