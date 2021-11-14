@@ -27,6 +27,7 @@ export const changeName = (preList: string[], enumList: any) => {
 
 // 城市陣列篩選
 export const filterByCities = (cities: string[], list: any[]) => {
+  if (cities.length === 0) return list
   const cnameKeyword: string[] = changeName(cities, CityNameZhTW)
   return list.filter((location) => {
     return cnameKeyword.find((cname) => {
@@ -39,8 +40,16 @@ export const filterByCities = (cities: string[], list: any[]) => {
 }
 
 // 特別項目篩選
-export const filterBySpecials = (Specials: string[], list: any[]) => {
-  return list
+export const filterBySpecials = (specials: string[], list: any[]) => {
+  if (specials.length === 0) return list
+  console.log('specials:', specials)
+  return list.filter((location) => {
+    return specials.find((special) => {
+      if (location.Class1 == special || location.Class2 == special || location.Class3 == special) {
+        return true
+      }
+    })
+  })
 }
 
 // 移除array中的那項item

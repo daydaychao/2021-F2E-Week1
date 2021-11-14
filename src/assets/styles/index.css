@@ -13,6 +13,9 @@
   font-family: arial, 'Microsoft JhengHei', '微軟正黑體', sans-serif;
   outline: none;
 }
+body {
+  background: #f5f5f5;
+}
 
 .home-top-image {
   background-image: url(../images/top.jpg);
@@ -38,11 +41,42 @@ input:focus-visible {
   align-content: flex-end;
 }
 
-.border_g {
-  border-color: #00f395;
+/* List.tsx */
+.filter-wrapper {
+  @apply bg-white border p-5;
+  @apply fixed h-screen w-full z-20 top-0 left-0; /*mobile*/
+  @apply sm:relative md:inline-flex md:h-full md:flex-col md:w-[235px] md:rounded-[10px]; /*desktop*/
+}
+
+.filter-md-spacing {
+  @apply hidden;
+  @apply md:inline-flex;
+  flex-basis: 1.5rem;
+}
+
+.filter-list {
+  width: calc(100% - 200px);
+  @apply flex-col w-full max-w-full;
+  @apply md:inline-flex;
+}
+
+@media (max-width: 768px) {
+  filter-md-spaceing {
+    flex-basis: 0;
+  }
 }
 
 /* UI */
+
+/* CheckboxBtn元件包住,3格一排 */
+.checkbox-btn-wrapper {
+  @apply flex flex-row flex-wrap;
+  @apply pb-2 mb-2;
+  @apply border-b;
+}
+.checkbox-btn-wrapper .checkbox-btn {
+  @apply flex-shrink;
+}
 
 /* CheckboxBtn元件 */
 .checkbox-btn input[type='checkbox'] {
@@ -50,9 +84,10 @@ input:focus-visible {
 }
 .checkbox-btn input[type='checkbox'] + label {
   @apply inline-block cursor-pointer;
-  @apply px-3 m-1 rounded;
-  @apply border-2 border-green-light focus:outline-none;
-  @apply hover:text-green-500;
+  @apply py-2 px-2 m-1; /* mobile */
+  @apply md:py-1.5 md:px-2 md:m-0.5; /* desktop */
+  @apply rounded-[10px] border border-green-light focus:outline-none;
+  @apply text-xs hover:text-green-500;
   @apply transition ease-in duration-200;
 }
 .checkbox-btn input[type='checkbox']:checked + label {
