@@ -5,6 +5,7 @@ import { CityNameZhTW, ScenicSpot as TScenicSpot } from '@/types'
 import { getCityNameEng, getCityNameZhTW } from '@/tools'
 import { Link } from 'react-router-dom'
 import useStore from '@/store'
+import ScrollToTop from '@/components/ScrollToTop'
 
 const getCityImg = () => {
   return Object.keys(CityNameZhTW).map((img) => `${import.meta.env.BASE_URL}images/${img}.jpg`)
@@ -29,6 +30,7 @@ export function Home() {
 
   return (
     <>
+      <ScrollToTop />
       <h1 className="text-xl md:text-2xl font-bold mb-4 mt-14">熱門景點</h1>
       <div className="grid grid-col md:grid-cols-3 gap-4 ">
         {citiesZhTW.map((city, index) => (

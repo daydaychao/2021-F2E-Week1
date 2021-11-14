@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { ChevronRightIcon, LocationMarkerIcon, BadgeCheckIcon, PhoneIcon } from '@heroicons/react/solid'
 import { LeafletMap } from '@/components/ui/LeafletMap'
 import autumnImg from '@/assets/images/autumn-in-taiwan-header.png'
+import ScrollToTop from '@/components/ScrollToTop'
 
 type IdParams = {
   id: string
@@ -53,12 +54,9 @@ export function Detail() {
     }
   }, [allLocation, detail, id])
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-
   return (
     <>
+      <ScrollToTop />
       <section className="flex flex-row items-center my-4">
         <Link to="/2021-F2E-Week1/home">首頁</Link>
         <ChevronRightIcon className="h-4 w-4" />

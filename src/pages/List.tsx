@@ -12,6 +12,7 @@ import useStore from '@/store'
 import debounce from 'lodash/debounce'
 import errorImg from '@/assets/images/nopic.jpg'
 import { render } from 'react-dom'
+import ScrollToTop from '@/components/ScrollToTop'
 
 let renderTime = 0
 let apiTimes = 0
@@ -294,6 +295,7 @@ export function List() {
 
   return (
     <>
+      <ScrollToTop />
       <section className="flex flex-row items-center my-4">
         <Link to="/2021-F2E-Week1/home">首頁</Link>
         <ChevronRightIcon className="h-4 w-4" />
@@ -362,7 +364,7 @@ export function List() {
         <article className="filter-md-spacing"></article>
 
         {/* 右邊 */}
-        <article className="filter-list">
+        <article className="filter-list ${isShowFilter ? 'overflow-y-hidden' : ''}">
           <div className="flex flex-row items-center bg-gray-100 border-black border-2 rounded-md h-[50px] md:h-[75px] mb-4 md:mb-2 pl-4">
             <SearchIcon className="h-10 w-10" />
             <input id="searchInput" className="h-full w-full p-5 bg-gray-100" placeholder="地點...博物館...旅遊城市" onChange={handleSearch}></input>
@@ -375,6 +377,7 @@ export function List() {
               </small>
             )}
             {!loading && <small> {filterData.length} 項景點</small>}
+            {!loading && filterData.length === 0 && <small className="text-green-400"> 查無資料,請重新篩選</small>}
             <button
               className="md:hidden font-bold bg-gray-300 rounded-none align-middle w-[120px] h-[30px] mb-2"
               onClick={() => {
@@ -388,7 +391,7 @@ export function List() {
 
           {filterData &&
             filterData.map((item: TScenicSpot, index: number) => (
-              <div key={item.ID} className="relative flex flex-col md:flex-row overflow-hidden bg-white border rounded-[10px] w-full h-[20rem] md:h-60 mb-4 md:pr-9">
+              <div key={item.ID} className="relative flex flex-col md:flex-row overflow-hidden bg-white border rounded-[10px] w-full h-[25rem] md:h-60 mb-4 md:pr-9">
                 <div className="relative md:overflow-hidden md:min-w-[110px] md:w-2/5">
                   <Link to={`scenicSpot/${item.ID}`}>
                     <img src={item.Picture.PictureUrl1} onError={htmlImageError} className="object-cover absolute top-50% left-50% block min-w-full min-h-full transform translate-x-50 translate-y-50" />

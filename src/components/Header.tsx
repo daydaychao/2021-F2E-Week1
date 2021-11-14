@@ -10,7 +10,7 @@ export function Header({ headerStyle }: HomeProps) {
   let isHome = true
   if (headerStyle != 'home') isHome = false
 
-  const handleKeyEnter = (e: React.KeyboardEvent<HTMLFormElement>) => {
+  const handleKeyEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.keyCode === 13) {
       e.preventDefault()
       handleSearchAndGo()
@@ -42,7 +42,7 @@ export function Header({ headerStyle }: HomeProps) {
         <header className="bg-green-light p-3">
           <Link to="/2021-F2E-Week1/home">
             <div className="mx-auto container px-5 md:px-10 font-bold">
-              <h1 className="text-3xl md:text-2xl mb-2">台灣旅遊景點導覽</h1>
+              <h1 className="text-2xl mb-2">台灣旅遊景點導覽</h1>
               <h4 className="text-sm md:text-md ">全台灣觀光景點報你知，交通餐飲旅宿通通有!</h4>
             </div>
           </Link>
