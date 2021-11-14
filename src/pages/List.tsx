@@ -123,21 +123,22 @@ export function List() {
       console.log('listData exits')
       list = map((x) => x, listData)
     }
+    if (list) {
+      // 城市
+      if (!filterCities.includes('allCity')) {
+        list = await filterByCities(filterCities, list)
+      }
 
-    // 城市
-    if (!filterCities.includes('allCity')) {
-      list = await filterByCities(filterCities, list)
+      // 文字
+      list = await filterByText(filterSearchText, list)
+
+      // 景點類別
+      list = await filterBySpecials(filterSpecials, list)
+
+      // 設定資料到filterList(dom渲染用)
+      console.log('篩選更新中...')
+      setFilterData(list)
     }
-
-    // 文字
-    list = await filterByText(filterSearchText, list)
-
-    // 景點類別
-    list = await filterBySpecials(filterSpecials, list)
-
-    // 設定資料到filterList(dom渲染用)
-    console.log('篩選更新中...')
-    setFilterData(list)
   }
 
   // api 取得單一城市資料
