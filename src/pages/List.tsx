@@ -139,18 +139,10 @@ export function List() {
       setListData(resJson)
       apiTimes += 1
     })
+    return true
   }
   // api 檢查資料
   const checkData = async () => {
-    if (!apiCityDataLoading) {
-      if (listData.length === 0) {
-        console.log('資料初始化...')
-        apiCityDataLoading = true
-        await getListData('Taipei')
-        apiCityDataLoading = false
-      }
-    }
-
     if (!apiAllDataLoading) {
       if (allLocation.length === 0) {
         if (includes('allCity', filterCities)) {
@@ -163,12 +155,8 @@ export function List() {
     }
   }
 
-  if (renderTime == 0) {
-    if (cityQuery) filterCities.push(cityQuery)
-    if (textQuery) filterSearchText.push(textQuery)
-    if (specialQuery) filterSpecials.push(specialQuery)
-  }
   renderTime += 1 // 跑完了,渲染次數+1
+  console.log('renderTime', renderTime)
 
   // useEffect (Watch) ===================================================
 
@@ -205,6 +193,21 @@ export function List() {
       setListData(allLocation)
     }
   }, [allLocation])
+
+  useEffect(() => {
+    let cityBtns = document.querySelectorAll('#' + cityQuery)
+    console.log('初次渲染 document ready')
+
+    // 初次進來選擇的都市
+    for (var i = 0; i < cityBtns.length; i++) {
+      ;(cityBtns[i] as HTMLInputElement).click()
+    }
+
+    return () => {
+      //router離開的時候清空
+      renderTime = 0
+    }
+  }, [])
 
   // DOM HTML ===================================================
 
@@ -288,7 +291,8 @@ export function List() {
           <div className="flex justify-between">
             {loading && (
               <small className="my-4 flex flex-row items-end">
-                <Spin /> <span>項景點</span>
+                <Spin />
+                <span>資料讀取中...</span>
               </small>
             )}
             {!loading && <small className="my-4"> {filterData.length} 項景點</small>}
@@ -297,6 +301,7 @@ export function List() {
               篩選條件
             </button>
           </div>
+
           {filterData &&
             filterData.map((item: TScenicSpot) => (
               <div key={item.ID} className="flex flex-row overflow-hidden bg-white border rounded-[10px] pr-9 h-60 mb-4 xl:w-3/4">
