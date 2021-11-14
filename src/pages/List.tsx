@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState, SyntheticEvent } from 'react'
+import React, { useEffect, useCallback, useState, SyntheticEvent, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { SearchIcon, ChevronRightIcon } from '@heroicons/react/solid'
 import { useQueryParam, StringParam } from 'use-query-params'
@@ -10,6 +10,7 @@ import { CheckboxBtn, Spin } from '@/components/ui/'
 import useStore from '@/store'
 import debounce from 'lodash/debounce'
 import errorImg from '@/assets/images/nopic.jpg'
+import { render } from 'react-dom'
 
 let renderTime = 0
 let apiTimes = 0
@@ -41,6 +42,11 @@ export function List() {
 
   // loading
   const [loading, setLoading] = useState(false)
+
+  // 動態載入資料
+  // const [renderData, setRenderData] = useState([])
+  // const containerRef = useRef(null)
+  const [isShowFilter, setIsShowFilter] = useState(false)
 
   // Filters ===================================================
 
@@ -213,12 +219,47 @@ export function List() {
     }
   }, [listData])
 
+
+
   useEffect(() => {
     apiAllDataLoading = false
     if (allLocation.length > 0) {
       filterController()
     }
   }, [allLocation])
+
+  // useEffect(() => {
+  //   if (renderData.length == 0) {
+  //     let tmpData = JSON.parse(JSON.stringify(filterData));
+  //     setRenderData(tmpData.slice(0, 10));
+  //   }
+  // }, [filterData])
+
+  // useEffect(() => {
+  //   let observer = new IntersectionObserver(() => {
+  //     let loadData: any = [];
+  //     let counter = 10;
+  
+  //     // 每次最多額外加入10筆資料
+  //     if (filterData.length != 0) {
+  //       while (renderData.length + loadData.length < filterData.length && counter != 0) {
+  //         loadData.push(filterData[renderData.length + 10 - counter]);
+  //         counter--;
+  //       }
+  
+  //       setRenderData(renderData.concat(loadData));
+  //     }
+  //   });
+
+  //   if (containerRef.current) {
+  //     observer.observe(containerRef.current);
+  //   }
+  //   return () => {
+  //     if (containerRef.current) {
+  //       observer.unobserve(containerRef.current);
+  //     }
+  //   }
+  // }, [containerRef])
 
   useEffect(() => {
     let cityQueryArray = (cityQuery as string).split(',')
@@ -260,10 +301,10 @@ export function List() {
 
       <section className="flex flex-col md:flex-row">
         {/* 篩選條件 */}
-        <article className="filter-wrapper">
+        <article className={`filter-wrapper ${isShowFilter ? "" : "hidden"} md:block`}>
           <div className="flex flex-row justify-between">
             <h1 className="text-xl md:text-xl font-bold mb-3.5">篩選條件</h1>
-            <button className="flex items-center justify-center border h-6 w-6 rounded-full">
+            <button className="flex items-center justify-center border h-6 w-6 rounded-full" onClick={() => { setIsShowFilter(!isShowFilter); return null; }}>
               <svg className="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 18 18">
                 <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
               </svg>
@@ -327,14 +368,14 @@ export function List() {
               </small>
             )}
             {!loading && <small className="my-4"> {filterData.length} 項景點</small>}
-            <button className="w-[120px] mb-2.5 rounded-none bg-gray-300 sm:hidden font-bold">
+            <button className="w-[120px] mb-2.5 rounded-none bg-gray-300 md:hidden font-bold" onClick={() => { setIsShowFilter(!isShowFilter); return null; }}>
               <ChevronRightIcon className="h-5 w-5 inline-block items-center" />
               篩選條件
             </button>
           </div>
 
           {filterData &&
-            filterData.map((item: TScenicSpot) => (
+          filterData.map((item: TScenicSpot, index: number) => (
               <div key={item.ID} className="flex flex-row overflow-hidden bg-white border rounded-[10px] pr-9 h-60 mb-4 xl:w-3/4">
                 <div className="overflow-hidden min-w-[110px] relative w-2/5">
                   <Link to={`scenicSpot/${item.ID}`}>
@@ -353,9 +394,11 @@ export function List() {
                   </Link>
                 </div>
               </div>
+
             ))}
         </article>
       </section>
+      {/* <span ref={containerRef}>aaaaa</span> */}
     </>
   )
 }
