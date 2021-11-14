@@ -28,13 +28,12 @@ function App() {
           </Switch>
         </main>
 
-        <footer className="text-center flex justify-center items-center bg-black text-white min-h-[40px] md:h-[60px] text-sm">
-          <div className="flex flex-row items-center mr-2">
-            <StarIcon className="h-4 w-4" />
-            台灣旅遊導覽
-            <StarIcon className="h-4 w-4" />
-          </div>
-          <small>十萬塊的星之碎片製作出品</small>
+        <footer className="flex flex-col justify-center items-center bg-black text-white text-center text-sm p-4">
+          <div>台灣旅遊導覽</div>
+          <small className="flex flex-row items-center">
+            <StarIcon className="h-2 w-2" />
+            十萬塊的星之碎片製作出品 <StarIcon className="h-2 w-2" />
+          </small>
         </footer>
       </div>
     </BrowserRouter>

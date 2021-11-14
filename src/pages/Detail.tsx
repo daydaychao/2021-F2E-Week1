@@ -71,7 +71,7 @@ export function Detail() {
         {detail?.Name}
       </section>
       <section className="my-4 border rounded-lg h-[310px]" style={imgStyle}></section>
-      <section className="my-4 flex flex-col border border-gray rounded-lg p-10">
+      <section className="my-4 flex flex-col border border-gray rounded-lg bg-white p-10">
         <p className="my-2 flex flex-row content-center items-center">
           <LocationMarkerIcon className="h-5 w-5 mr-1 min-w-[20px]" />
           地址: {detail?.Address || '資訊待補'}

@@ -42,7 +42,7 @@ export function List() {
   const [filterSpecials, setFilterSpecials]: any[] = useState([])
 
   // loading
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   // 動態載入資料
   // const [renderData, setRenderData] = useState([])
@@ -185,8 +185,8 @@ export function List() {
   }
 
   renderTime += 1 // 跑完了,渲染次數+1
-  console.log('renderTime', renderTime)
-  console.log('apiTimes', apiTimes)
+  // console.log('renderTime', renderTime)
+  // console.log('apiTimes', apiTimes)
 
   // useEffect (Watch) ===================================================
 
@@ -398,10 +398,10 @@ export function List() {
                   {item.City && <h3 className="text-sm">{item.City}</h3>}
                   <h1 className="mt-0.5">{item.Name}</h1>
                   <small className="text-xs md:text-sm mt-1 md:mt-4 font-normal desText">{item.DescriptionDetail}</small>
-                  <Link to={`scenicSpot/${item.ID}`} className=" md:flex justify-end mt-3">
-                    <button className=" bg-white border border-green-light font-bold inline-block text-sm md:text-lg w-full md:w-40 px-8 py-2">
+                  <Link to={`scenicSpot/${item.ID}`} className="flex justify-end mt-3">
+                    <button className="inline-flex flex-row place-items-center justify-center bg-white border border-green-light font-bold text-sm md:text-lg w-full md:w-40 px-8 py-2">
                       詳細介紹
-                      <ChevronRightIcon className="hidden md:inline-block align-text-bottom h-5 w-5" />
+                      <ChevronRightIcon className="inline-block align-text-bottom h-4 w-4" />
                     </button>
                   </Link>
                 </div>
