@@ -56,7 +56,7 @@ input:focus-visible {
   @apply sm:hidden md:inline-flex;
   flex-basis: 40px;
 }
-medai-query (max-width: 768px) {
+@media (max-width: 768px) {
   filter-md-spaceing {
     flex-basis: 0;
   }
