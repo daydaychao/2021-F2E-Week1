@@ -107,12 +107,20 @@ export function List() {
     console.log('%c城市', 'color:orange;background:black;padding:2px 10px', filterCities)
     console.log('%c特別', 'color:orange;background:black;padding:2px 10px', filterSpecials)
 
+    if (allLocation.length == 0 && listData == 0) {
+      //NOTE checkData會在去抓一次資料 抓到資料後再來檢查
+      console.warn('唉呦bug或斷線 還沒有抓到資料就在篩選了 checkData中...')
+      checkData()
+      return
+    }
+
     let list
 
     if (allLocation.length > 0) {
       console.log('allLocation exits')
       list = map((x) => x, allLocation)
-    } else {
+    } else if (listData.length > 0) {
+      console.log('listData exits')
       list = map((x) => x, listData)
     }
 
@@ -129,7 +137,6 @@ export function List() {
 
     // 設定資料到filterList(dom渲染用)
     console.log('篩選更新中...')
-    // updateParams()
     setFilterData(list)
   }
 
@@ -141,22 +148,30 @@ export function List() {
     })
     return true
   }
-  // api 檢查資料
+
+  // api 檢查資料庫
   const checkData = async () => {
-    if (!apiAllDataLoading) {
-      if (allLocation.length === 0) {
-        if (includes('allCity', filterCities)) {
-          console.log('取得全部資料中...')
-          apiAllDataLoading = true
-          await getAll()
-          apiAllDataLoading = false
+    if (allLocation.length === 0) {
+      if (!apiAllDataLoading) {
+        apiAllDataLoading = true
+        console.log('取得全部資料中...')
+        await getAll()
+      }
+    }
+
+    if (listData == 0) {
+      if (!apiCityDataLoading) {
+        apiCityDataLoading = true
+        if (cityQuery) {
+          console.log(`搜尋${cityQuery}城市資料中...`)
+          await getListData(cityQuery)
         }
       }
     }
   }
 
   renderTime += 1 // 跑完了,渲染次數+1
-  console.log('renderTime', renderTime)
+  // console.log('renderTime', renderTime)
 
   // useEffect (Watch) ===================================================
 
@@ -169,8 +184,8 @@ export function List() {
 
   // 篩選 filterSearchText, filterCities, filterSpecials
   useEffect(() => {
-    checkData()
     if (renderTime > 0) {
+      checkData()
       debounceFn(async () => {
         console.log('%c useEffect: debounce filter', 'color:orange;background:black;padding:2px 10px')
         setCityQuery(filterCities)
@@ -182,26 +197,23 @@ export function List() {
     }
   }, [filterSearchText, filterCities, filterSpecials])
 
-  // 景點資料庫 listData
+  // 資料庫有更新時
   useEffect(() => {
-    setFilterData(listData)
+    apiCityDataLoading = false
+    filterController()
   }, [listData])
 
-  // store的資料變更時
   useEffect(() => {
-    if (allLocation.length > 0 && listData.length === 0) {
-      setListData(allLocation)
-    }
+    apiAllDataLoading = false
+    filterController()
   }, [allLocation])
 
   useEffect(() => {
-    let cityBtns = document.querySelectorAll('#' + cityQuery)
-    console.log('初次渲染 document ready')
-
-    // 初次進來選擇的都市
-    for (var i = 0; i < cityBtns.length; i++) {
-      ;(cityBtns[i] as HTMLInputElement).click()
-    }
+    let cityQueryArray = (cityQuery as string).split(',')
+    cityQueryArray.map((city: string) => {
+      console.log('city:', city)
+      document.getElementById(city)?.click()
+    })
 
     return () => {
       //router離開的時候清空
@@ -237,7 +249,14 @@ export function List() {
       <section className="flex flex-col md:flex-row">
         {/* 篩選條件 */}
         <article className="filter-wrapper">
-          <h1 className="text-xl md:text-xl font-bold mb-3.5">篩選條件</h1>
+          <div className="flex flex-row justify-between">
+            <h1 className="text-xl md:text-xl font-bold mb-3.5">篩選條件</h1>
+            <button className="flex items-center justify-center border h-6 w-6 rounded-full">
+              <svg className="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 18 18">
+                <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+              </svg>
+            </button>
+          </div>
 
           <CheckboxBtn onChange={handleCheckboxBtn} id="allCity" name="allCity" text="全台景點" />
 

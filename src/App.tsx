@@ -22,8 +22,8 @@ function App() {
             <QueryParamProvider ReactRouterRoute={Route}>
               <Route exact path="/2021-F2E-Week1/home" component={Home} />
               <Route exact path="/2021-F2E-Week1/scenicSpot" component={List} />
-              <Route exact path="/2021-F2E-Week1/scenicSpot/:id" component={Detail} />
-              <Redirect to="/2021-F2E-Week1/home" />
+              <Route path="/2021-F2E-Week1/scenicSpot/:id" component={Detail} />
+              {/* <Redirect to="/2021-F2E-Week1/home" /> */}
             </QueryParamProvider>
           </Switch>
         </main>
