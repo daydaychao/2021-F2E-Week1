@@ -157,22 +157,29 @@ export function List() {
         apiAllDataLoading = true
         console.log('取得全部資料中...')
         await getAll()
+        apiTimes++
       }
     }
 
     if (listData == 0) {
       if (!apiCityDataLoading) {
         apiCityDataLoading = true
-        if (cityQuery) {
+        if (cityQuery && cityQuery.length == 1) {
+          if (cityQuery === 'allCity') {
+            return
+          }
+
           console.log(`搜尋${cityQuery}城市資料中...`)
           await getListData(cityQuery)
+          apiTimes++
         }
       }
     }
   }
 
   renderTime += 1 // 跑完了,渲染次數+1
-  // console.log('renderTime', renderTime)
+  console.log('renderTime', renderTime)
+  console.log('apiTimes', apiTimes)
 
   // useEffect (Watch) ===================================================
 
@@ -201,12 +208,16 @@ export function List() {
   // 資料庫有更新時
   useEffect(() => {
     apiCityDataLoading = false
-    filterController()
+    if (listData.length > 0) {
+      filterController()
+    }
   }, [listData])
 
   useEffect(() => {
     apiAllDataLoading = false
-    filterController()
+    if (allLocation.length > 0) {
+      filterController()
+    }
   }, [allLocation])
 
   useEffect(() => {
@@ -326,7 +337,9 @@ export function List() {
             filterData.map((item: TScenicSpot) => (
               <div key={item.ID} className="flex flex-row overflow-hidden bg-white border rounded-[10px] pr-9 h-60 mb-4 xl:w-3/4">
                 <div className="overflow-hidden min-w-[110px] relative w-2/5">
-                  <img src={item.Picture.PictureUrl1} onError={htmlImageError} className="object-cover absolute top-50% left-50% block min-w-full min-h-full transform translate-x-50 translate-y-50" />
+                  <Link to={`scenicSpot/${item.ID}`}>
+                    <img src={item.Picture.PictureUrl1} onError={htmlImageError} className="object-cover absolute top-50% left-50% block min-w-full min-h-full transform translate-x-50 translate-y-50" />
+                  </Link>
                 </div>
                 <div className="py-6 flex flex-col justify-between ml-5 font-bold w-3/5 relative md:w-3/5 xl:w-4/5">
                   <h3 className="text-sm">{item.City}</h3>

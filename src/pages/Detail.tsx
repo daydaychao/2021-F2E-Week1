@@ -64,7 +64,9 @@ export function Detail() {
         <ChevronRightIcon className="h-4 w-4" />
         <Link to="/2021-F2E-Week1/home">城市</Link>
         <ChevronRightIcon className="h-4 w-4" />
-        <Link to="/2021-F2E-Week1/scenicSpot">景點</Link>
+        <a href="#" onClick={() => history.back()}>
+          景點
+        </a>
         <ChevronRightIcon className="h-4 w-4" />
         {detail?.Name}
       </section>
