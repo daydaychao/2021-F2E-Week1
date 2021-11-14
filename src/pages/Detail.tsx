@@ -53,6 +53,10 @@ export function Detail() {
     }
   }, [allLocation, detail, id])
 
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   return (
     <>
       <section className="flex flex-row items-center my-4">
