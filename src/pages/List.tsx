@@ -310,9 +310,9 @@ export function List() {
     <>
       <ScrollToTop />
       <section className="flex flex-row items-center my-4">
-        <Link to="/2021-F2E-Week1/home">首頁</Link>
+        <Link to="/">首頁</Link>
         <ChevronRightIcon className="h-4 w-4" />
-        <Link to="/2021-F2E-Week1/home">城市</Link>
+        <Link to="/">城市</Link>
         <ChevronRightIcon className="h-4 w-4" />
         <span className="text-gray-400">景點</span>
       </section>

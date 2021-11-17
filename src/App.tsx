@@ -8,10 +8,10 @@ import CustomSwitch from '@/components/CustomSwitch'
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <div className="h-screen flex flex-col">
         <CustomSwitch>
-          <Route exact path="/2021-F2E-Week1/home">
+          <Route exact path="/">
             <Header headerStyle="home" />
           </Route>
           <Route>
@@ -22,10 +22,10 @@ function App() {
         <main className="container px-5 mb-20 mx-auto">
           <CustomSwitch>
             <QueryParamProvider ReactRouterRoute={Route}>
-              <Route exact path="/2021-F2E-Week1/home" component={Home} />
-              <Route exact path="/2021-F2E-Week1/scenicSpot" component={List} />
-              <Route path="/2021-F2E-Week1/scenicSpot/:id" component={Detail} />
-              <Redirect to="/2021-F2E-Week1/home" />
+              <Route exact path="/" component={Home} />
+              <Route exact path="/scenicSpot" component={List} />
+              <Route path="/scenicSpot/:id" component={Detail} />
+              <Redirect to="/" />
             </QueryParamProvider>
           </CustomSwitch>
         </main>
@@ -34,7 +34,8 @@ function App() {
           <div>台灣旅遊導覽</div>
           <small className="flex flex-row items-center">
             <StarIcon className="h-2 w-2" />
-            十萬塊的星之碎片製作出品 <StarIcon className="h-2 w-2" />
+            十萬塊的星之碎片製作出品 ver 1.10
+            <StarIcon className="h-2 w-2" />
           </small>
         </footer>
       </div>
