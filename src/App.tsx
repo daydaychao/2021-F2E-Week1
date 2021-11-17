@@ -7,8 +7,9 @@ import { StarIcon } from '@heroicons/react/solid'
 import CustomSwitch from '@/components/CustomSwitch'
 
 function App() {
+  console.log('baseUrl', import.meta.env.BASE_URL)
   return (
-    <BrowserRouter basename={process.env.VITE_BASE_URL}>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <div className="h-screen flex flex-col">
         <CustomSwitch>
           <Route exact path="/">
