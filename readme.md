@@ -1,3 +1,9 @@
+## log
+
+ver 1.01 修正路徑 home 輸入會造成 404 問題
+
+====
+
 請大家在 Dev/xxx 分支研發, 做好的 merge 到 Developer
 
 - Master (主線)
@@ -64,7 +70,3 @@ npm i -g git-cz
 ## vscode extensions
 
 - css 認識 tailwindcss 的 rule <https://marketplace.visualstudio.com/items?itemName=csstools.postcss>
-
-## log
-
-ver 1.1 修正路徑 home 輸入會造成 404 問題

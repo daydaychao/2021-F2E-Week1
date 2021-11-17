@@ -8,7 +8,7 @@ import CustomSwitch from '@/components/CustomSwitch'
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.VITE_BASE_URL}>
       <div className="h-screen flex flex-col">
         <CustomSwitch>
           <Route exact path="/">
@@ -34,7 +34,7 @@ function App() {
           <div>台灣旅遊導覽</div>
           <small className="flex flex-row items-center">
             <StarIcon className="h-2 w-2" />
-            十萬塊的星之碎片製作出品 ver 1.1
+            十萬塊的星之碎片製作出品 ver 1.01
             <StarIcon className="h-2 w-2" />
           </small>
         </footer>
