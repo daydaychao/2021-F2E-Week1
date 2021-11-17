@@ -64,3 +64,7 @@ npm i -g git-cz
 ## vscode extensions
 
 - css 認識 tailwindcss 的 rule <https://marketplace.visualstudio.com/items?itemName=csstools.postcss>
+
+## log
+
+ver 1.1 修正路徑 home 輸入會造成 404 問題
