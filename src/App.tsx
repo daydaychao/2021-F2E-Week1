@@ -7,7 +7,6 @@ import { StarIcon } from '@heroicons/react/solid'
 import CustomSwitch from '@/components/CustomSwitch'
 
 function App() {
-  console.log('baseUrl', import.meta.env.BASE_URL)
   return (
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <div className="h-screen flex flex-col">
@@ -35,7 +34,7 @@ function App() {
           <div>台灣旅遊導覽</div>
           <small className="flex flex-row items-center">
             <StarIcon className="h-2 w-2" />
-            十萬塊的星之碎片製作出品 ver 1.01
+            十萬塊的星之碎片製作出品 ver 1.10
             <StarIcon className="h-2 w-2" />
           </small>
         </footer>
