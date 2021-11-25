@@ -1,4 +1,4 @@
- https://divinechao.github.io/2021-F2E-Week1/<https://divinechao.github.io/2021-F2E-Week1/>
+ https://divinechao.github.io/2021-F2E-Week1/
 
 
 ## log
