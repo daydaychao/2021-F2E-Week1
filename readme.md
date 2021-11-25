@@ -1,3 +1,6 @@
+ https://divinechao.github.io/2021-F2E-Week1/<https://divinechao.github.io/2021-F2E-Week1/>
+
+
 ## log
 
 ver 1.01 修正路徑 home 輸入會造成 404 問題
